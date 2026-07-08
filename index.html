@@ -254,18 +254,21 @@
     min-width: 80px;
     padding: 13px 8px;
     border-radius: 10px;
-    border: 2px solid #ddd;
-    background: #fff;
+    border: 2px solid;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
     text-align: center;
+    opacity: 0.75;
   }
-  .rec-btn:hover { border-color: #999; }
-  .rec-btn.selected-yes { border-color: #111; background: #111; color: #fff; }
-  .rec-btn.selected-no { border-color: #bbb; background: #f5f5f5; color: #555; }
-  .rec-btn.selected-unsure { border-color: #999; background: #f0f0f0; color: #444; }
+  .rec-btn:hover { opacity: 1; }
+  #btn_yes    { border-color: #1a7a3a; background: #f0fff4; color: #1a7a3a; }
+  #btn_unsure { border-color: #d97706; background: #fffbeb; color: #d97706; }
+  #btn_no     { border-color: #cc2222; background: #fff0f0; color: #cc2222; }
+  .rec-btn.selected-yes    { background: #1a7a3a; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #a7f3c0; transform: scale(1.04); }
+  .rec-btn.selected-unsure { background: #d97706; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #fde68a; transform: scale(1.04); }
+  .rec-btn.selected-no     { background: #cc2222; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #fca5a5; transform: scale(1.04); }
 
   .name-input-wrap {
     margin-top: 16px;
@@ -350,6 +353,68 @@
     display: none;
   }
   .error-msg.visible { display: block !important; }
+
+  /* ── AÇIKLAMA SAYFASI ── */
+  #page-intro { padding: 24px 16px 48px; }
+  .intro-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; color: #111; }
+  .intro-text { font-size: 0.95rem; color: #444; line-height: 1.7; margin-bottom: 24px; }
+  .intro-scenarios { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+  .scenario-card {
+    background: #fff;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+  .scenario-img {
+    width: 90px;
+    min-height: 90px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  .scenario-body { padding: 14px 16px; flex: 1; }
+  .scenario-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .scenario-label.green { color: #1a7a3a; }
+  .scenario-label.orange { color: #d97706; }
+  .scenario-label.red { color: #cc2222; }
+  .scenario-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
+
+  /* ── PERFORMANS SAYFASI ── */
+  #page-done {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+  #page-done.active { display: flex !important; }
+  .perf-grid {
+    display: flex;
+    gap: 12px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .perf-card {
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 90px;
+    text-align: center;
+  }
+  .perf-card.green  { background: #f0fff4; border: 2px solid #1a7a3a; }
+  .perf-card.orange { background: #fffbeb; border: 2px solid #d97706; }
+  .perf-card.red    { background: #fff0f0; border: 2px solid #cc2222; }
+  .perf-pct { font-size: 1.8rem; font-weight: 800; }
+  .perf-pct.green  { color: #1a7a3a; }
+  .perf-pct.orange { color: #d97706; }
+  .perf-pct.red    { color: #cc2222; }
+  .perf-label { font-size: 0.78rem; color: #666; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -363,9 +428,20 @@
   <div class="cover-subtitle">Size göstereceğimiz ünlü yüzleri tanıyabilecek misiniz?</div>
 
   <div class="cover-desc">
-    <p>Bu çalışmada size bazı ünlülerin yüzlerini göstereceğiz ve isimlerini yazmanızı isteyeceğiz.</p>
-    <p><em>Araştırma detayları burada yer alacak. Metin düzenleniyor...</em></p>
-    <p>Katılımınız için teşekkür ederiz.</p>
+    <p><strong>Şimdi göreceğiniz ünlü yüzleri tanıyabilecek misiniz?</strong></p>
+    <br>
+    <p>Birazdan fotoğrafını göreceğiniz ünlü/meşhur kişilerin adlarını yazmanızı istiyoruz. Bu işlem 20 dk sürebilir ama eğlenceli. 50 yaşın üstündekilerin katılımını hedefliyoruz. Eğer bu yaşın altındaysanız anne-babanız veya 50 yaş üstü bir tanıdığınıza uygulayabilirsiniz. Anket bittiğinde performansınızın özetini görebileceksiniz.</p>
+    <br>
+    <p>Sizden isminiz istenmeyecek, sadece yaş, cinsiyet, eğitim gibi bilgiler istenecektir. Veriler sadece bilimsel araştırma için kullanılacak, kimseyle paylaşılmayacaktır. Katılım gönüllülük esaslıdır.</p>
+    <br>
+    <p><strong><u>Araştırmacılar</u></strong><br>
+    Doç. Dr. Erol Yıldırım (İst. Medipol Ünv. Psikoloji Bölümü)<br>
+    Psk. Melek Elcircevi (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)<br>
+    Psk. Ayşegül Kurtuluş (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)<br>
+    Psk. Z. Tara Ünal (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)</p>
+    <br>
+    <p><strong><u>İletişim:</u></strong><br>
+    Melek Elcircevi &gt; <a href="mailto:melek.elcircevi@gmail.com">melek.elcircevi@gmail.com</a></p>
   </div>
 
   <div id="resume_banner" style="display:none; background:#fff; border:1.5px solid #ddd; border-radius:12px; padding:18px 20px; max-width:400px; margin-bottom:20px; text-align:left;">
@@ -376,7 +452,7 @@
       <button class="btn-secondary" style="padding:12px 20px; font-size:0.9rem; margin-top:0;" onclick="doFresh()">Baştan Başla</button>
     </div>
   </div>
-  <button class="btn-primary" id="start_btn" onclick="showPage('page-demo')">Ankete Başla →</button>
+  <button class="btn-primary" id="start_btn" onclick="showPage('page-demo')">Okudum, onayladım, katılmak istiyorum.</button>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -486,6 +562,46 @@
 </div>
 
 <!-- ══════════════════════════════════════════
+     SAYFA 2B: ANKET AÇIKLAMASI
+════════════════════════════════════════════ -->
+<div id="page-intro" class="page">
+  <div class="intro-title">Ankete başlamadan önce...</div>
+  <div class="intro-text">
+    Şimdi size art arda ünlü kişilerin fotoğrafları gösterilecek. Her fotoğraf için üç seçenekten birini seçmeniz yeterli. <strong>Tanıyorum</strong> veya <strong>Emin Değilim</strong> seçeneğini seçerseniz, kişinin adını yazmanız istenecek — mümkün olduğunca tam adı yazmaya çalışın ama bildiğiniz kadarı da yeterli.
+    <br><br>
+    Herhangi bir nedenle anketi yarıda bırakırsanız, <strong>aynı cihaz ve tarayıcıyla</strong> tekrar açtığınızda kaldığınız yerden devam edebilirsiniz. Anket tamamlandığında kişisel performans özetinizi görebileceksiniz.
+  </div>
+
+  <div class="intro-scenarios">
+    <div class="scenario-card">
+      <div class="scenario-img" style="background:#f0fff4; font-size:1.5rem;">👤</div>
+      <div class="scenario-body">
+        <div class="scenario-label green">✓ Tanıyorum</div>
+        <div class="scenario-desc">Fotoğraftaki kişiyi tanıyorsanız seçin ve adını yazın.</div>
+      </div>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-img" style="background:#fffbeb; font-size:1.5rem;">👤</div>
+      <div class="scenario-body">
+        <div class="scenario-label orange">? Emin Değilim</div>
+        <div class="scenario-desc">Tanıyor olabileceğinizi düşünüyorsanız seçin ve aklınızdaki ismi yazın.</div>
+      </div>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-img" style="background:#fff0f0; font-size:1.5rem;">👤</div>
+      <div class="scenario-body">
+        <div class="scenario-label red">✗ Tanımıyorum</div>
+        <div class="scenario-desc">Fotoğraftaki kişiyi hiç tanımıyorsanız seçin, bir sonraki fotoğrafa geçilir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-primary" onclick="startFaces()">Başla →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
      SAYFA 3: YÜZLER
 ════════════════════════════════════════════ -->
 <div id="page-faces" class="page">
@@ -509,12 +625,12 @@
       <div class="face-question">Bu kişiyi tanıyor musunuz?</div>
       <div class="recognition-btns">
         <button class="rec-btn" id="btn_yes"    onclick="selectRecognition('yes')">Tanıyorum</button>
-        <button class="rec-btn" id="btn_no"     onclick="selectRecognition('no')">Tanımıyorum</button>
         <button class="rec-btn" id="btn_unsure" onclick="selectRecognition('unsure')">Emin Değilim</button>
+        <button class="rec-btn" id="btn_no"     onclick="selectRecognition('no')">Tanımıyorum</button>
       </div>
 
       <div class="name-input-wrap" id="name_wrap">
-        <label for="name_input">Bu kişinin tam adını yazınız:</label>
+        <label for="name_input">Bu kişinin mümkünce tam adını yazınız:</label>
         <input type="text" id="name_input" placeholder="Ad Soyad giriniz…">
       </div>
     </div>
@@ -533,8 +649,11 @@
 ════════════════════════════════════════════ -->
 <div id="page-done" class="page">
   <div class="done-icon">🎉</div>
-  <div class="done-title">Teşekkürler!</div>
-  <div class="done-msg">Yanıtlarınız başarıyla kaydedildi. Katkınız için çok teşekkür ederiz.</div>
+  <div class="done-title">Tebrikler, tamamladınız!</div>
+
+  <canvas id="perf_chart" style="margin: 20px auto; display:block;"></canvas>
+
+  <div style="font-size:0.92rem; color:#555; line-height:1.7; max-width:360px; text-align:center;" id="perf_detail"></div>
   <div class="submit-status" id="submit_status"></div>
 </div>
 
@@ -558,6 +677,96 @@ const PHOTOS = [
   { id: "1CramjGG7fwGAzuWaV8j5zuEsFqWUZSDs", name: "7 Alparslan Türkeş", url: "https://lh3.googleusercontent.com/d/1CramjGG7fwGAzuWaV8j5zuEsFqWUZSDs=w800" },
   { id: "1wXsijDRy0ou3WT4U1kY-X__i5s0GQr1j", name: "8 Angela Merkel", url: "https://lh3.googleusercontent.com/d/1wXsijDRy0ou3WT4U1kY-X__i5s0GQr1j=w800" },
   { id: "1yWBkYK5dzXrIGu8Sm9xtGWcjhSwketCG", name: "9 Arda Güler", url: "https://lh3.googleusercontent.com/d/1yWBkYK5dzXrIGu8Sm9xtGWcjhSwketCG=w800" },
+  { id: "1Os_otJoLGuGvO-M6BGSHzXwaX1qlaOzT", name: "10 Arda Turan", url: "https://lh3.googleusercontent.com/d/1Os_otJoLGuGvO-M6BGSHzXwaX1qlaOzT=w800" },
+  { id: "1nf5breH-rHnmQ3Ry3YqyiBUCPJWOK0QN", name: "11 Attila İlhan", url: "https://lh3.googleusercontent.com/d/1nf5breH-rHnmQ3Ry3YqyiBUCPJWOK0QN=w800" },
+  { id: "1J5HRnMJwxKOwgT5lT-rQ0HMoAXQppdjE", name: "12 Ayhan Işık", url: "https://lh3.googleusercontent.com/d/1J5HRnMJwxKOwgT5lT-rQ0HMoAXQppdjE=w800" },
+  { id: "14uqnbVTRyzPoExs2nxiKR1nxhNbXpf8H", name: "13 Aziz Sancar", url: "https://lh3.googleusercontent.com/d/14uqnbVTRyzPoExs2nxiKR1nxhNbXpf8H=w800" },
+  { id: "1gWNrdW_G9rWXpnZz0dZSm7IftcjxtfaY", name: "14 Barack Obama", url: "https://lh3.googleusercontent.com/d/1gWNrdW_G9rWXpnZz0dZSm7IftcjxtfaY=w800" },
+  { id: "1IFxu-9EeBmz7i5c6gEZb6OpRTi_puVo1", name: "15 Barış Manço", url: "https://lh3.googleusercontent.com/d/1IFxu-9EeBmz7i5c6gEZb6OpRTi_puVo1=w800" },
+  { id: "1GJnLlmvrBGjhS1_UomtARrtpTg0eSIsA", name: "16 Bülent Ecevit", url: "https://lh3.googleusercontent.com/d/1GJnLlmvrBGjhS1_UomtARrtpTg0eSIsA=w800" },
+  { id: "1oIAqzdOk53E8cMS5YDWsEdYk80L3YSSl", name: "17 Bülent Ersoy", url: "https://lh3.googleusercontent.com/d/1oIAqzdOk53E8cMS5YDWsEdYk80L3YSSl=w800" },
+  { id: "1A2AMnBs4B5Se4hWuKAb5ayWwjwLaOR6O", name: "17 Bülent Ersoy (yeni)", url: "https://lh3.googleusercontent.com/d/1A2AMnBs4B5Se4hWuKAb5ayWwjwLaOR6O=w800" },
+  { id: "14Z7arx3cUKj6Xz9l9A-IgghpDnX-bzYa", name: "18 Cem Karaca", url: "https://lh3.googleusercontent.com/d/14Z7arx3cUKj6Xz9l9A-IgghpDnX-bzYa=w800" },
+  { id: "1ZtwUI4ks3aAZylGG0Fb5-5T_HbyIzbEh", name: "19 Cem Yılmaz", url: "https://lh3.googleusercontent.com/d/1ZtwUI4ks3aAZylGG0Fb5-5T_HbyIzbEh=w800" },
+  { id: "1OxkpXZ5XEl2Fj8SoNBgOZKi2PZQ0Epqj", name: "20 Cristiano Ronaldo", url: "https://lh3.googleusercontent.com/d/1OxkpXZ5XEl2Fj8SoNBgOZKi2PZQ0Epqj=w800" },
+  { id: "1B34b2DoI0P-04ScVC4AZczuT7mUTUbkz", name: "21 Cüneyt Arkın", url: "https://lh3.googleusercontent.com/d/1B34b2DoI0P-04ScVC4AZczuT7mUTUbkz=w800" },
+  { id: "126v5ln6uEb_CVGkqbbUkDy8vLdRCIKVr", name: "22 Deniz Baykal", url: "https://lh3.googleusercontent.com/d/126v5ln6uEb_CVGkqbbUkDy8vLdRCIKVr=w800" },
+  { id: "1D4kfbqS0XyUVm8fLlKx4Gy2-UJ5TIabO", name: "23 Devlet Bahçeli", url: "https://lh3.googleusercontent.com/d/1D4kfbqS0XyUVm8fLlKx4Gy2-UJ5TIabO=w800" },
+  { id: "1-0kN8o2gwCq8_nTkj_O91dVIzla3Qv1Q", name: "24 Donald Trump", url: "https://lh3.googleusercontent.com/d/1-0kN8o2gwCq8_nTkj_O91dVIzla3Qv1Q=w800" },
+  { id: "1WpW3jYYQR1y_NXtpDcwisBdV8RxyntJo", name: "25 Ediz Hun (genç)", url: "https://lh3.googleusercontent.com/d/1WpW3jYYQR1y_NXtpDcwisBdV8RxyntJo=w800" },
+  { id: "1eoZ6m1chFSnpWrm_53go5KIm-s8qsHZO", name: "26 Ekrem İmamoğlu", url: "https://lh3.googleusercontent.com/d/1eoZ6m1chFSnpWrm_53go5KIm-s8qsHZO=w800" },
+  { id: "1HlMHUGUOhkNIDdwvXBk3Tmf2aNME8p3Z", name: "27 Emel Sayın (genç)", url: "https://lh3.googleusercontent.com/d/1HlMHUGUOhkNIDdwvXBk3Tmf2aNME8p3Z=w800" },
+  { id: "1o143NXQm0OevwMjegQbgBhPQWq2VZIN6", name: "27 Emel Sayın (yaşlı)", url: "https://lh3.googleusercontent.com/d/1o143NXQm0OevwMjegQbgBhPQWq2VZIN6=w800" },
+  { id: "1enezAVXrONsjvYIRpz7EfFDzL8nQtJqm", name: "28 Erdal İnönü", url: "https://lh3.googleusercontent.com/d/1enezAVXrONsjvYIRpz7EfFDzL8nQtJqm=w800" },
+  { id: "1_O0Xyi3xiaJ7C7o5A6154RgtvCTM55lb", name: "29 Fatih Terim", url: "https://lh3.googleusercontent.com/d/1_O0Xyi3xiaJ7C7o5A6154RgtvCTM55lb=w800" },
+  { id: "1v5D3NgdFdRUHqdaAx86vahSKgNzyTgrk", name: "30 Fatma Girik (genç)", url: "https://lh3.googleusercontent.com/d/1v5D3NgdFdRUHqdaAx86vahSKgNzyTgrk=w800" },
+  { id: "1TE6cEPz26GT-4JE0Xgi6Jnpnmm4Kw8ZV", name: "31 Ferdi Tayfur", url: "https://lh3.googleusercontent.com/d/1TE6cEPz26GT-4JE0Xgi6Jnpnmm4Kw8ZV=w800" },
+  { id: "1kqq-p0HBrafIZJ9JMAKvUTMNJreirKhq", name: "32 Fikret Hakan", url: "https://lh3.googleusercontent.com/d/1kqq-p0HBrafIZJ9JMAKvUTMNJreirKhq=w800" },
+  { id: "1XHH0gBs91BrIJqZuo2eyxVj2kW-aBOy9", name: "33 Filiz Akın", url: "https://lh3.googleusercontent.com/d/1XHH0gBs91BrIJqZuo2eyxVj2kW-aBOy9=w800" },
+  { id: "1EilbzfKofrhr_a4qM91SgbuckCDd_V04", name: "34 Gülşen Bubikoğlu", url: "https://lh3.googleusercontent.com/d/1EilbzfKofrhr_a4qM91SgbuckCDd_V04=w800" },
+  { id: "1zkb5meYjOMCLJIPDeZZVpEQHpeAFYjSD", name: "35 Haluk Bilginer", url: "https://lh3.googleusercontent.com/d/1zkb5meYjOMCLJIPDeZZVpEQHpeAFYjSD=w800" },
+  { id: "12kcFC4l77V1LO9d53gxSNTCTbdzq_gO6", name: "36 Hulusi Kentmen", url: "https://lh3.googleusercontent.com/d/12kcFC4l77V1LO9d53gxSNTCTbdzq_gO6=w800" },
+  { id: "1KZOHoNIDWi3e5XwH3LsjPo8vwZV3bSwQ", name: "37 Hülya Avşar", url: "https://lh3.googleusercontent.com/d/1KZOHoNIDWi3e5XwH3LsjPo8vwZV3bSwQ=w800" },
+  { id: "1S0FGJyZNAv5WduTwmA-gUkrQAy88Y7gP", name: "38 Hülya Koçyiğit (genç)", url: "https://lh3.googleusercontent.com/d/1S0FGJyZNAv5WduTwmA-gUkrQAy88Y7gP=w800" },
+  { id: "1zBlGimloi88-WScEdUi7oTXxI08bYpNw", name: "39 İbrahim Tatlıses", url: "https://lh3.googleusercontent.com/d/1zBlGimloi88-WScEdUi7oTXxI08bYpNw=w800" },
+  { id: "1lM9iq-xx97zjyQdEKEWpbwBLhznZLA0v", name: "40 İlber Ortaylı", url: "https://lh3.googleusercontent.com/d/1lM9iq-xx97zjyQdEKEWpbwBLhznZLA0v=w800" },
+  { id: "1SvL0jwi3KjAUvV80Ptn-V98giVuNKSI0", name: "41 İsmet İnönü", url: "https://lh3.googleusercontent.com/d/1SvL0jwi3KjAUvV80Ptn-V98giVuNKSI0=w800" },
+  { id: "1dB7lodBU4n9cjR__6Z007yNPeyId9LsA", name: "42 J.F. Kennedy", url: "https://lh3.googleusercontent.com/d/1dB7lodBU4n9cjR__6Z007yNPeyId9LsA=w800" },
+  { id: "1HAb8iuCTigHcUXXUp6mh7ue_aT27dMTR", name: "43 Kadir İnanır (genç)", url: "https://lh3.googleusercontent.com/d/1HAb8iuCTigHcUXXUp6mh7ue_aT27dMTR=w800" },
+  { id: "1aUtG8EbRkTuzI_rmwWvqMl7OQQQT_cVB", name: "44 Kartal Tibet", url: "https://lh3.googleusercontent.com/d/1aUtG8EbRkTuzI_rmwWvqMl7OQQQT_cVB=w800" },
+  { id: "1YsAy7ovmPmo7NHLk8aZgi-jlL2QmH-vz", name: "45 Kemal Kılıçdaroğlu", url: "https://lh3.googleusercontent.com/d/1YsAy7ovmPmo7NHLk8aZgi-jlL2QmH-vz=w800" },
+  { id: "1Lh1OkqVIyzSXRbBpoUp4UzdIH_neVQPS", name: "46 Kemal Sunal", url: "https://lh3.googleusercontent.com/d/1Lh1OkqVIyzSXRbBpoUp4UzdIH_neVQPS=w800" },
+  { id: "17SuAsRAIiXYTwHj2ssdJedDiJtZfwwbO", name: "47 Kenan Evren", url: "https://lh3.googleusercontent.com/d/17SuAsRAIiXYTwHj2ssdJedDiJtZfwwbO=w800" },
+  { id: "10u5aslzvcce--eTd6vhhIZcOsJcXfCdj", name: "48 Kenan İmirzalıoğlu", url: "https://lh3.googleusercontent.com/d/10u5aslzvcce--eTd6vhhIZcOsJcXfCdj=w800" },
+  { id: "1yOXmatO09afQGAwxAAXb105VgkxoT1aJ", name: "49 Maradona", url: "https://lh3.googleusercontent.com/d/1yOXmatO09afQGAwxAAXb105VgkxoT1aJ=w800" },
+  { id: "1JtHFzevQ4cWwJ-GHStlm1U4Hp09rJjuk", name: "50 Margaret Thatcher", url: "https://lh3.googleusercontent.com/d/1JtHFzevQ4cWwJ-GHStlm1U4Hp09rJjuk=w800" },
+  { id: "1_zgdaTgU2sCYtcR27SNUmA_SKD1D2_-z", name: "51 Marie Curie", url: "https://lh3.googleusercontent.com/d/1_zgdaTgU2sCYtcR27SNUmA_SKD1D2_-z=w800" },
+  { id: "11WT57m4BL9JjygldE1EZdNiV8-y9G_A9", name: "52 Mehmet Akif Ersoy", url: "https://lh3.googleusercontent.com/d/11WT57m4BL9JjygldE1EZdNiV8-y9G_A9=w800" },
+  { id: "1nD16MNDH38jWE2EKmvtaWNaYxKOW8mLG", name: "53 Mesut Yılmaz", url: "https://lh3.googleusercontent.com/d/1nD16MNDH38jWE2EKmvtaWNaYxKOW8mLG=w800" },
+  { id: "12LdHCfRCN_MYqPIj60yP6qEEQ8X6jlJX", name: "54 Metin Akpınar", url: "https://lh3.googleusercontent.com/d/12LdHCfRCN_MYqPIj60yP6qEEQ8X6jlJX=w800" },
+  { id: "1e53v4ZvQ9cn5_GU7h8gxa_kAVr3-LuD0", name: "55 Metin Oktay", url: "https://lh3.googleusercontent.com/d/1e53v4ZvQ9cn5_GU7h8gxa_kAVr3-LuD0=w800" },
+  { id: "1XoPJd_q9JVhnxFg7Zy5BDJsYk8gzYSM8", name: "56 Metin Tekin", url: "https://lh3.googleusercontent.com/d/1XoPJd_q9JVhnxFg7Zy5BDJsYk8gzYSM8=w800" },
+  { id: "1YI56gBG01TZlKjovZdZSR4domzJpyar8", name: "57 Muazzez Abacı", url: "https://lh3.googleusercontent.com/d/1YI56gBG01TZlKjovZdZSR4domzJpyar8=w800" },
+  { id: "15Rg6qUTeyAzeK_MQ27mG-HGxB9WGXjpA", name: "57 Muazzez Abacı (yaşlılığı)", url: "https://lh3.googleusercontent.com/d/15Rg6qUTeyAzeK_MQ27mG-HGxB9WGXjpA=w800" },
+  { id: "16vB5CAA0e4j7NS1Pe8Td4U23SPv7l1s1", name: "58 Muazzez Ersoy", url: "https://lh3.googleusercontent.com/d/16vB5CAA0e4j7NS1Pe8Td4U23SPv7l1s1=w800" },
+  { id: "14u1Ruw_iUyEWpo76dorN9YtMLu-1Y4ZF", name: "59 Muhammed Ali", url: "https://lh3.googleusercontent.com/d/14u1Ruw_iUyEWpo76dorN9YtMLu-1Y4ZF=w800" },
+  { id: "11yrNJPX0qG5kO6-XzuHsJaTqwt7OdXPi", name: "60 Muhsin Yazıcıoğlu", url: "https://lh3.googleusercontent.com/d/11yrNJPX0qG5kO6-XzuHsJaTqwt7OdXPi=w800" },
+  { id: "1n0SqZ8wOWGxJoGmKCnh5rU5vkUh-YNv-", name: "61 Müslüm Gürses", url: "https://lh3.googleusercontent.com/d/1n0SqZ8wOWGxJoGmKCnh5rU5vkUh-YNv-=w800" },
+  { id: "1NAGJdQ9Spm23kFHbexBFlsXerx2r9hUr", name: "62 Naim Süleymanoğlu", url: "https://lh3.googleusercontent.com/d/1NAGJdQ9Spm23kFHbexBFlsXerx2r9hUr=w800" },
+  { id: "1NGIt7ua1qAsQzRJQdMATxxvzPGgDWqr7", name: "63 Nazım Hikmet", url: "https://lh3.googleusercontent.com/d/1NGIt7ua1qAsQzRJQdMATxxvzPGgDWqr7=w800" },
+  { id: "14p1Yl3eA4yf8FualoxEF0vYwQg9OsJnw", name: "64 Necip Fazıl Kısakürek", url: "https://lh3.googleusercontent.com/d/14p1Yl3eA4yf8FualoxEF0vYwQg9OsJnw=w800" },
+  { id: "1yX0Jfe2p-Ee2qn9clg9rFON84vnkTR6G", name: "65 Necmettin Erbakan", url: "https://lh3.googleusercontent.com/d/1yX0Jfe2p-Ee2qn9clg9rFON84vnkTR6G=w800" },
+  { id: "1vfhbM4IEyyxwG0U0vqYpQID5i4u9WGrO", name: "66 Neşe Karaböcek", url: "https://lh3.googleusercontent.com/d/1vfhbM4IEyyxwG0U0vqYpQID5i4u9WGrO=w800" },
+  { id: "10lkiZDNpS1Bk7SLIewjih4IwIua60o7Y", name: "67 Neşet Ertaş", url: "https://lh3.googleusercontent.com/d/10lkiZDNpS1Bk7SLIewjih4IwIua60o7Y=w800" },
+  { id: "1xZsPR9VUezXsr0chpO9cUMImPnNbJJpd", name: "68 Orhan Gencebay", url: "https://lh3.googleusercontent.com/d/1xZsPR9VUezXsr0chpO9cUMImPnNbJJpd=w800" },
+  { id: "1m4DZYJ4PO49TRpjjSIAE3ekpJBC0cr5a", name: "69 Orhan Pamuk", url: "https://lh3.googleusercontent.com/d/1m4DZYJ4PO49TRpjjSIAE3ekpJBC0cr5a=w800" },
+  { id: "1oo7LJgSXJosZzN4k7GRUn4vFcrlDYou1", name: "70 Orhan Veli Kanık", url: "https://lh3.googleusercontent.com/d/1oo7LJgSXJosZzN4k7GRUn4vFcrlDYou1=w800" },
+  { id: "1sSn-L1N-qWXF3oP6b5IEpYjXHLfnxW2k", name: "71 Özgür Özel", url: "https://lh3.googleusercontent.com/d/1sSn-L1N-qWXF3oP6b5IEpYjXHLfnxW2k=w800" },
+  { id: "1YNf6daU7p4Kv5RSZMNE5GQMrCHjsdpZ5", name: "72 Pele", url: "https://lh3.googleusercontent.com/d/1YNf6daU7p4Kv5RSZMNE5GQMrCHjsdpZ5=w800" },
+  { id: "1FGm1tl320eTEqBo6o-LfWNt6p1NIfWBs", name: "73 Perihan Savaş (genç)", url: "https://lh3.googleusercontent.com/d/1FGm1tl320eTEqBo6o-LfWNt6p1NIfWBs=w800" },
+  { id: "1pKuxmP-yT4dYrvFZCSiz0Hq4h3q6ZC6v", name: "74 Putin", url: "https://lh3.googleusercontent.com/d/1pKuxmP-yT4dYrvFZCSiz0Hq4h3q6ZC6v=w800" },
+  { id: "1AbKW-2Feo3aEdDrYWFSkxBLI5KD1hc90", name: "75 Rıdvan Dilmen", url: "https://lh3.googleusercontent.com/d/1AbKW-2Feo3aEdDrYWFSkxBLI5KD1hc90=w800" },
+  { id: "1SA5ZP-qLDRjTbXUZHpIg5XfmLV7wZyLc", name: "76 Robert De Niro", url: "https://lh3.googleusercontent.com/d/1SA5ZP-qLDRjTbXUZHpIg5XfmLV7wZyLc=w800" },
+  { id: "1Dug2PIhyY8Bc2Q28Q5DoQL3lucbnje_b", name: "77 Saddam Hüseyin", url: "https://lh3.googleusercontent.com/d/1Dug2PIhyY8Bc2Q28Q5DoQL3lucbnje_b=w800" },
+  { id: "1YClnRZKw0Gxu2qb-TO5-lA0PYFiVOJ92", name: "78 Sergen Yalçın", url: "https://lh3.googleusercontent.com/d/1YClnRZKw0Gxu2qb-TO5-lA0PYFiVOJ92=w800" },
+  { id: "1aYinW2BS2RzFwHolXq_Y8AkylIaU7aIq", name: "79 Sezen Aksu", url: "https://lh3.googleusercontent.com/d/1aYinW2BS2RzFwHolXq_Y8AkylIaU7aIq=w800" },
+  { id: "1isKYME-WhmSuCBHQ_w-BxyREg8hQ9sm9", name: "80 Sibel Can", url: "https://lh3.googleusercontent.com/d/1isKYME-WhmSuCBHQ_w-BxyREg8hQ9sm9=w800" },
+  { id: "1sjKdN6NggbeoLedQfJ6SEdQmFmUfGPIn", name: "81 Süleyman Demirel", url: "https://lh3.googleusercontent.com/d/1sjKdN6NggbeoLedQfJ6SEdQmFmUfGPIn=w800" },
+  { id: "150eeUSAPMgqO_tZrsB0JPsTz2lMVz0Hw", name: "82 Şener Şen", url: "https://lh3.googleusercontent.com/d/150eeUSAPMgqO_tZrsB0JPsTz2lMVz0Hw=w800" },
+  { id: "1ee3aIcp6hrJCtqMwVQSCUoslerQxrMiE", name: "83 Tanju Çolak (genç)", url: "https://lh3.googleusercontent.com/d/1ee3aIcp6hrJCtqMwVQSCUoslerQxrMiE=w800" },
+  { id: "1lYnX-buR6RSLg3zVY0whgDsj5e9SMAV5", name: "84 Tanju Çolak (yaşlı)", url: "https://lh3.googleusercontent.com/d/1lYnX-buR6RSLg3zVY0whgDsj5e9SMAV5=w800" },
+  { id: "1y0gW4tIR0I7j30EE_HTgta_jTTpb1jsp", name: "85 Tansu Çiller", url: "https://lh3.googleusercontent.com/d/1y0gW4tIR0I7j30EE_HTgta_jTTpb1jsp=w800" },
+  { id: "1S4Ipdt2V5Df3SOhZgdOjuQdijH36azsn", name: "86 Tarık Akan", url: "https://lh3.googleusercontent.com/d/1S4Ipdt2V5Df3SOhZgdOjuQdijH36azsn=w800" },
+  { id: "1sIFMRca82FAISvzbIwyXw4eCFcF0uYpp", name: "87 Tarkan", url: "https://lh3.googleusercontent.com/d/1sIFMRca82FAISvzbIwyXw4eCFcF0uYpp=w800" },
+  { id: "1d2AYQkFhNwUWONLK34ypHMiOM2qIwB6z", name: "88 Turgut Özal", url: "https://lh3.googleusercontent.com/d/1d2AYQkFhNwUWONLK34ypHMiOM2qIwB6z=w800" },
+  { id: "1O5NFruX8HRMikQNbA8EKArmRSqW3a0Gm", name: "89 Türkan Şoray", url: "https://lh3.googleusercontent.com/d/1O5NFruX8HRMikQNbA8EKArmRSqW3a0Gm=w800" },
+  { id: "11iouSiEKtaUoOtlIcD-o8by__WAhJeF9", name: "90 Winston Churchill", url: "https://lh3.googleusercontent.com/d/11iouSiEKtaUoOtlIcD-o8by__WAhJeF9=w800" },
+  { id: "1d1uvwdu9WMiK0ngPTGvpk3Ulwt_eX8Z9", name: "91 Yaşar Kemal", url: "https://lh3.googleusercontent.com/d/1d1uvwdu9WMiK0ngPTGvpk3Ulwt_eX8Z9=w800" },
+  { id: "1NeYHFR5fQqkdvSs5n1b1XnTzbYHmXf59", name: "92 Zeki Alasya", url: "https://lh3.googleusercontent.com/d/1NeYHFR5fQqkdvSs5n1b1XnTzbYHmXf59=w800" },
+  { id: "10uH6_lGTxi58k3mwkm0dz6HGGZXL6XNV", name: "93 Zülfü Livaneli", url: "https://lh3.googleusercontent.com/d/10uH6_lGTxi58k3mwkm0dz6HGGZXL6XNV=w800" },
+  { id: "1wAAda9Odyi_RM0ykM_qY00BcLBHLmuzI", name: "94 Mustafa Kemal Atatürk", url: "https://lh3.googleusercontent.com/d/1wAAda9Odyi_RM0ykM_qY00BcLBHLmuzI=w800" },
+  { id: "1-HWiP-X5OeJXAFdOEJi4boMEp2X4O4rd", name: "95 Recep Tayyip Erdoğan", url: "https://lh3.googleusercontent.com/d/1-HWiP-X5OeJXAFdOEJi4boMEp2X4O4rd=w800" },
+  { id: "1e5aplhqk47XozVSsNBSMDjyu6sbB0L7k", name: "96 Zeki Müren", url: "https://lh3.googleusercontent.com/d/1e5aplhqk47XozVSsNBSMDjyu6sbB0L7k=w800" },
 ];
 
 // ── STATE ───────────────────────────────────────────────
@@ -647,6 +856,11 @@ function submitDemographics() {
   currentIndex = 0;
   responses = [];
 
+  showPage('page-intro');
+}
+
+// ── START FACES ─────────────────────────────────────────────
+function startFaces() {
   showPage('page-faces');
   loadFace();
 }
@@ -710,6 +924,16 @@ function selectRecognition(choice) {
 function nextFace() {
   const photo = shuffledPhotos[currentIndex];
   const nameVal = document.getElementById('name_input').value.trim();
+
+  // Name required for yes and unsure
+  if ((currentRecognition === 'yes' || currentRecognition === 'unsure') && !nameVal) {
+    const input = document.getElementById('name_input');
+    input.style.borderColor = '#cc2222';
+    input.placeholder = 'Lütfen bir isim giriniz';
+    input.focus();
+    return;
+  }
+  document.getElementById('name_input').style.borderColor = '';
 
   responses.push({
     photo_id:    photo.id,
@@ -801,6 +1025,93 @@ function resumeProgress(state) {
 }
 // ────────────────────────────────────────────────────────
 
+function showPerformance() {
+  const total = responses.length;
+  if (total === 0) return;
+  const yes    = responses.filter(r => r.recognition === 'Tanıyorum').length;
+  const unsure = responses.filter(r => r.recognition === 'Emin Değilim').length;
+  const no     = responses.filter(r => r.recognition === 'Tanımıyorum').length;
+
+  document.getElementById('perf_detail').textContent =
+    `${total} fotoğraftan ${yes} tanesini tanıdınız, ${unsure} tanesinden emin değildiniz, ${no} tanesini tanımadınız.`;
+
+  const canvas = document.getElementById('perf_chart');
+  const dpr = window.devicePixelRatio || 1;
+  const W = 340, H = 300;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const cx = W / 2, cy = H / 2;
+  const rOuter = 90, rInner = 50;
+  const gap = 0.025;
+
+  const slices = [
+    { val: yes,    color: '#1a7a3a', label: 'Tanıyorum' },
+    { val: unsure, color: '#d97706', label: 'Emin Değilim' },
+    { val: no,     color: '#cc2222', label: 'Tanımıyorum' },
+  ].filter(s => s.val > 0);
+
+  // Draw slices
+  let startAngle = -Math.PI / 2;
+  const drawn = [];
+  slices.forEach(s => {
+    const sweep = (s.val / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter, startAngle + gap/2, startAngle + sweep - gap/2);
+    ctx.arc(cx, cy, rInner, startAngle + sweep - gap/2, startAngle + gap/2, true);
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+    drawn.push({ s, midAngle: startAngle + sweep / 2, pct: Math.round(s.val / total * 100) });
+    startAngle += sweep;
+  });
+
+  // White donut hole
+  ctx.beginPath();
+  ctx.arc(cx, cy, rInner - 1, 0, 2 * Math.PI);
+  ctx.fillStyle = '#f5f5f5';
+  ctx.fill();
+
+  // Labels outside with leader lines
+  drawn.forEach(({ s, midAngle, pct }) => {
+    if (pct === 0) return;
+    const cos = Math.cos(midAngle), sin = Math.sin(midAngle);
+
+    const x1 = cx + cos * (rOuter + 5);
+    const y1 = cy + sin * (rOuter + 5);
+    const x2 = cx + cos * (rOuter + 18);
+    const y2 = cy + sin * (rOuter + 18);
+    // Text anchor point
+    const tx = cx + cos * (rOuter + 22);
+    const ty = cy + sin * (rOuter + 22);
+
+    // Leader line
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Text alignment
+    let align = 'center';
+    if (cos > 0.2)  align = 'left';
+    if (cos < -0.2) align = 'right';
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 13px system-ui';
+    ctx.fillText(pct + '%', tx, ty - 8);
+    ctx.font = '11px system-ui';
+    ctx.fillText(s.label, tx, ty + 8);
+  });
+}
+
 async function submitData() {
   // Show a loading overlay on the face page while submitting
   const btn = document.getElementById('btn_next');
@@ -820,6 +1131,7 @@ async function submitData() {
       mode: 'no-cors',
     });
     clearProgress();
+    showPerformance();
     showPage('page-done');
     const statusEl = document.getElementById('submit_status');
     statusEl.className = 'submit-status success';
