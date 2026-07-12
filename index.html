@@ -1123,34 +1123,40 @@ function showPerformance() {
 }
 
 async function submitData() {
-  // Show a loading overlay on the face page while submitting
-  const btn = document.getElementById('btn_next');
-  if (btn) { btn.disabled = true; btn.textContent = 'Kaydediliyor…'; }
+  // Snapshot everything first
+  const payload = JSON.stringify({
+    timestamp: new Date().toISOString(),
+    demographics: {
+      yas: demographics.yas, cinsiyet: demographics.cinsiyet,
+      egitim: demographics.egitim, egitimYil: demographics.egitimYil,
+      meslek: demographics.meslek, gelir: demographics.gelir,
+      turkiye: demographics.turkiye, sehir: demographics.sehir, konum: demographics.konum
+    },
+    responses: responses.map(r => ({
+      photo_name: r.photo_name, recognition: r.recognition, given_name: r.given_name || ''
+    }))
+  });
 
-  const payload = {
-    timestamp:    new Date().toISOString(),
-    demographics: demographics,
-    responses:    responses,
-  };
+  // Show loading only after snapshot
+  showPage('page-sending');
 
+  console.log('Gönderilen payload uzunluğu:', payload.length);
+  console.log('Payload ilk 200 karakter:', payload.slice(0, 200));
   try {
-    // Use GET with encoded data - works reliably with Apps Script no-cors
-    const encoded = encodeURIComponent(JSON.stringify(payload));
-    await fetch(GOOGLE_SHEETS_URL + '?data=' + encoded, {
-      method: 'GET',
-      mode: 'no-cors',
+    const resp = await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: payload
     });
+    const result = await resp.text();
+    console.log('Sheets cevabı:', result);
     clearProgress();
     showPerformance();
     showPage('page-done');
-    const statusEl = document.getElementById('submit_status');
-    statusEl.className = 'submit-status success';
-    statusEl.textContent = '✓ Yanıtlarınız başarıyla kaydedildi.';
-  } catch (err) {
-    showPage('page-done');
-    const statusEl = document.getElementById('submit_status');
-    statusEl.className = 'submit-status error';
-    statusEl.textContent = 'Bağlantı hatası oluştu. Lütfen araştırmacıyla iletişime geçin.';
+    document.getElementById('submit_status').className = 'submit-status success';
+    document.getElementById('submit_status').textContent = '✓ Yanıtlarınız başarıyla kaydedildi.';
+  } catch(err) {
+    document.getElementById('sending_msg').textContent = 'Bağlantı hatası. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
     console.error(err);
   }
 }
