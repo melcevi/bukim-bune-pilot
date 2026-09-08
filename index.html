@@ -568,9 +568,9 @@
 <div id="page-intro" class="page">
   <div class="intro-title">Ankete başlamadan önce...</div>
   <div class="intro-text">
-    Şimdi size art arda ünlü kişilerin fotoğrafları gösterilecek. Her fotoğraf için üç seçenekten birini seçmeniz yeterli. <strong>Tanıyorum</strong> veya <strong>Emin Değilim</strong> seçeneğini seçerseniz, kişinin adını yazmanız istenecek — mümkün olduğunca tam adı yazmaya çalışın ama bildiğiniz kadarı da yeterli.
+    Şimdi size art arda ünlü kişilerin fotoğrafları gösterilecek. Her fotoğraf için üç seçenekten birini seçin. <strong>Tanıyorum</strong> veya <strong>Tanımıyorum</strong> butonuna basıldığında otomatik olarak bir sonraki fotoğrafa geçilir. Katılımcı kişiyi tanıdığını söylüyor ama tam adını hatırlayamıyorsa <strong>Emin Değilim</strong> seçeneğini seçin ve katılımcının söylediklerini kutucuğa yazın.
     <br><br>
-    Herhangi bir nedenle anketi yarıda bırakırsanız, <strong>aynı cihaz ve tarayıcıyla</strong> tekrar açtığınızda kaldığınız yerden devam edebilirsiniz. Anket tamamlandığında kişisel performans özetinizi görebileceksiniz.
+    Her fotoğrafın sol üst köşesinde bir numara görünecek — bu numara Drive'daki sırayla aynıdır, referans olarak kullanabilirsiniz. Herhangi bir nedenle uygulamayı yarıda bırakırsanız <strong>aynı cihaz ve tarayıcıyla</strong> tekrar açtığınızda kaldığınız yerden devam edebilirsiniz. Uygulama tamamlandığında performans özetini görebileceksiniz.
   </div>
 
   <div class="intro-scenarios">
@@ -578,21 +578,21 @@
       <div class="scenario-img" style="background:#f0fff4; font-size:1.5rem;">👤</div>
       <div class="scenario-body">
         <div class="scenario-label green">✓ Tanıyorum</div>
-        <div class="scenario-desc">Fotoğraftaki kişiyi tanıyorsanız seçin ve adını yazın.</div>
+        <div class="scenario-desc">Katılımcı kişiyi tanıyorsa seçin — otomatik sonraki fotoğrafa geçilir.</div>
       </div>
     </div>
     <div class="scenario-card">
       <div class="scenario-img" style="background:#fffbeb; font-size:1.5rem;">👤</div>
       <div class="scenario-body">
         <div class="scenario-label orange">? Emin Değilim</div>
-        <div class="scenario-desc">Tanıyor olabileceğinizi düşünüyorsanız seçin ve aklınızdaki ismi yazın.</div>
+        <div class="scenario-desc">Kişiyi tanıdığını düşünüyor ama adını hatırlayamıyorsa seçin. Katılımcının söylediklerini kutucuğa yazıp "Kaydet ve Devam Et"e basın.</div>
       </div>
     </div>
     <div class="scenario-card">
       <div class="scenario-img" style="background:#fff0f0; font-size:1.5rem;">👤</div>
       <div class="scenario-body">
         <div class="scenario-label red">✗ Tanımıyorum</div>
-        <div class="scenario-desc">Fotoğraftaki kişiyi hiç tanımıyorsanız seçin, bir sonraki fotoğrafa geçilir.</div>
+        <div class="scenario-desc">Katılımcı kişiyi tanımıyorsa seçin — otomatik sonraki fotoğrafa geçilir.</div>
       </div>
     </div>
   </div>
@@ -623,7 +623,10 @@
            onerror="document.getElementById('img_loading').textContent='Fotoğraf yüklenemedi';">
     </div>
     <div class="face-actions">
-      <div class="face-question">Bu kişiyi tanıyor musunuz?</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div class="face-question" style="margin-bottom:0;">Bu kişiyi tanıyor musunuz?</div>
+        <div id="photo_number" style="font-size:0.78rem; color:#aaa; font-weight:600; white-space:nowrap; margin-left:12px;"></div>
+      </div>
       <div class="recognition-btns">
         <button class="rec-btn" id="btn_yes"    onclick="selectRecognition('yes')">Tanıyorum</button>
         <button class="rec-btn" id="btn_unsure" onclick="selectRecognition('unsure')">Emin Değilim</button>
@@ -631,14 +634,14 @@
       </div>
 
       <div class="name-input-wrap" id="name_wrap">
-        <label for="name_input">Bu kişinin mümkünce tam adını yazınız:</label>
-        <input type="text" id="name_input" placeholder="Ad Soyad giriniz…">
+        <label for="name_input">Bu kişi hakkında ne biliyorsunuz?</label>
+        <input type="text" id="name_input" placeholder="neyle ünlü? ne iş yapıyor">
       </div>
     </div>
 
-    <div class="face-nav">
+    <div class="face-nav" id="face_nav">
       <button class="btn-next-face" id="btn_next" onclick="nextFace()" disabled>
-        Sonraki →
+        Kaydet ve Devam Et →
       </button>
     </div>
   </div>
@@ -905,8 +908,12 @@ function loadFace() {
   document.getElementById('name_wrap').className = 'name-input-wrap';
   document.getElementById('name_input').value = '';
   const isLast = currentIndex === shuffledPhotos.length - 1;
-  document.getElementById('btn_next').textContent = isLast ? 'Tamamla →' : 'Sonraki →';
+  document.getElementById('btn_next').textContent = isLast ? 'Kaydet ve Bitir →' : 'Kaydet ve Devam Et →';
   document.getElementById('btn_next').disabled = true;
+  document.getElementById('face_nav').style.display = 'none';
+  // Show photo number from Drive order
+  const photoNum = shuffledPhotos[currentIndex].name.split(' ')[0];
+  document.getElementById('photo_number').textContent = 'No: ' + photoNum;
   prefetchNext();
 }
 
@@ -929,23 +936,29 @@ function selectRecognition(choice) {
   document.getElementById('btn_unsure').className = 'rec-btn' + (choice === 'unsure' ? ' selected-unsure' : '');
 
   const nameWrap = document.getElementById('name_wrap');
-  nameWrap.className = 'name-input-wrap' + (choice === 'yes' || choice === 'unsure' ? ' visible' : '');
+  const faceNav  = document.getElementById('face_nav');
 
-  document.getElementById('btn_next').disabled = false;
+  if (choice === 'yes' || choice === 'no') {
+    // Direct next - no input needed
+    nameWrap.className = 'name-input-wrap';
+    faceNav.style.display = 'none';
+    document.getElementById('name_input').value = '';
+    // Auto-advance after brief delay so user sees selection
+    setTimeout(() => nextFace(), 400);
+  } else {
+    // Emin değilim - show input and next button
+    nameWrap.className = 'name-input-wrap visible';
+    faceNav.style.display = 'block';
+    document.getElementById('btn_next').disabled = false;
+    document.getElementById('name_input').focus();
+  }
 }
 
 function nextFace() {
   const photo = shuffledPhotos[currentIndex];
   const nameVal = document.getElementById('name_input').value.trim();
 
-  // Name required for yes and unsure
-  if ((currentRecognition === 'yes' || currentRecognition === 'unsure') && !nameVal) {
-    const input = document.getElementById('name_input');
-    input.style.borderColor = '#cc2222';
-    input.placeholder = 'Lütfen bir isim giriniz';
-    input.focus();
-    return;
-  }
+  // For unsure: input optional but encouraged (no hard block)
   document.getElementById('name_input').style.borderColor = '';
 
   responses.push({
@@ -1140,8 +1153,6 @@ async function submitData() {
   // Show loading only after snapshot
   showPage('page-sending');
 
-  console.log('Gönderilen payload uzunluğu:', payload.length);
-  console.log('Payload ilk 200 karakter:', payload.slice(0, 200));
   try {
     const resp = await fetch(GOOGLE_SHEETS_URL, {
       method: 'POST',
