@@ -355,6 +355,21 @@
     <div class="error-msg" id="err_konum">Lütfen bir seçenek işaretleyiniz.</div>
   </div>
 
+  <div class="form-group">
+    <label>10. Uygulama testi alan ve uygulayıcı *</label>
+    <div class="radio-group" id="q_uygulama_sekli">
+      <label class="radio-option"><input type="radio" name="uygulama_sekli" value="Yan yana iken uygulandı"> Yan yana iken uygulandı</label>
+      <label class="radio-option"><input type="radio" name="uygulama_sekli" value="Uzaktan çevrimiçi uygulandı"> Uzaktan çevrimiçi uygulandı</label>
+    </div>
+    <div class="error-msg" id="err_uygulama_sekli">Lütfen bir seçenek işaretleyiniz.</div>
+  </div>
+
+  <div class="form-group">
+    <label for="q_uygulayan">11. Uygulayan kişinin Adı Soyadı *</label>
+    <input type="text" id="q_uygulayan" placeholder="Örn: Melek Elcircevi">
+    <div class="error-msg" id="err_uygulayan">Lütfen uygulayan kişinin adını soyadını giriniz.</div>
+  </div>
+
   <div class="nav-row">
     <button class="btn-primary" onclick="submitDemographics()">Bitir →</button>
   </div>
@@ -399,8 +414,8 @@
 ========================================= -->
 <script>
 // -- GOOGLE SHEETS ENTEGRASYONU (mevcut sheet'lere yazmaya devam eder) --
-const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbzGAh5-sMcC6PJ9a2gdhyUjccJHPqHYcqUYJYZp3wE2QZHRypEdL-nGa0PispUH2ttp/exec";
-const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbySGcNeH-AQwC518VYYw-6Ws0y3jLDm6HwjxjtV0ZsI-9VLjvOfM4Q7aeb5QI7NUKod/exec";
+const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbyxfJwKNB8lP5wMrT3R960KdHJIzB0T1-bIPWqnlJjdMbBh3UZtHi6YJTVbAyfVRqg9DQ/exec";
+const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbxQOjt0FDLTRZzpkkJMtENOVykkmwjHPj1m4Cd9EnpCZNOwmPQopvNnXi-c4unzZPeY/exec";
 
 const PHOTOS = [
   { no: 1, name: "Abdullah Gül", id: "1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq", url: "https://lh3.googleusercontent.com/d/1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq=w800" },
@@ -804,10 +819,12 @@ function submitDemographics() {
   }
   const sehir      = checkText('q_sehir', 'err_sehir');
   const konum      = checkRadio('konum', 'err_konum');
+  const uygulamaSekli = checkRadio('uygulama_sekli', 'err_uygulama_sekli');
+  const uygulayan  = checkText('q_uygulayan', 'err_uygulayan');
 
   if (!valid) { window.scrollTo(0,0); return; }
 
-  demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum };
+  demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum, uygulamaSekli, uygulayan };
   submitAllData();
 }
 
@@ -909,19 +926,31 @@ function showCombinedPerformance() {
   renderPerfBlock(neResponses, 'perf_grid_bune', 'perf_text_bune');
 }
 
-// -- SUBMIT TO GOOGLE SHEETS (iki ayrı dosya) ---------------------
-async function postTest(url, testResponses, stimulusKey) {
+// -- SUBMIT TO GOOGLE SHEETS (iki ayrı dosya, sütun/wide format) --
+function pivotToWide(items, responses) {
+  // items: sabit (karıştırılmamış) PHOTOS veya OBJECTS listesi -> sütun sırası hep aynı olur
+  // responses: {no, name, recognition, given_desc, rt} - no+name kombinasyonu tekil anahtar
+  const byKey = {};
+  responses.forEach(r => { byKey[r.no + '|' + r.name] = r; });
+
+  const wide = {};
+  items.forEach(it => {
+    const key = it.no + '|' + it.name;
+    const r = byKey[key];
+    const label = `${it.no}. ${it.name}`;
+    wide[label] = r ? r.recognition : '';
+    wide[label + ' (açıklama)'] = r ? (r.given_desc || '') : '';
+    wide[label + ' (süre sn)'] = r ? (r.rt === '' || r.rt === undefined ? '' : r.rt) : '';
+  });
+  return wide;
+}
+
+async function postTest(url, wideData) {
   const payload = JSON.stringify({
     timestamp: new Date().toISOString(),
     participantId: participantId,
     demographics: demographics,
-    responses: testResponses.map(r => ({
-      [stimulusKey + '_no']: r.no,
-      [stimulusKey + '_name']: r.name,
-      recognition: r.recognition,
-      given_desc: r.given_desc || '',
-      rt: r.rt === '' || r.rt === undefined ? '' : r.rt
-    }))
+    wide: wideData
   });
 
   const resp = await fetch(url, {
@@ -942,11 +971,13 @@ async function submitAllData() {
 
   let bukimError = null, buneError = null;
   try {
-    await postTest(GOOGLE_SHEETS_URL_BUKIM, biResponses, 'photo');
+    const wideBuKim = pivotToWide(PHOTOS, biResponses);
+    await postTest(GOOGLE_SHEETS_URL_BUKIM, wideBuKim);
   } catch (e) { bukimError = e; console.error('BuKim gönderim hatası:', e); }
 
   try {
-    await postTest(GOOGLE_SHEETS_URL_BUNE, neResponses, 'object');
+    const wideBuNe = pivotToWide(OBJECTS, neResponses);
+    await postTest(GOOGLE_SHEETS_URL_BUNE, wideBuNe);
   } catch (e) { buneError = e; console.error('BuNe gönderim hatası:', e); }
 
   if (bukimError || buneError) {
