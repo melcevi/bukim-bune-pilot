@@ -3,446 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bu Kim? - v2</title>
+<title>BuNe-BuKim-Pilot</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #f5f5f5;
-    color: #1a1a1a;
-    min-height: 100vh;
-  }
-
-  .page {
-    display: none !important;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+  .page { display: none !important; min-height: 100vh; padding: 24px 16px 48px; max-width: 600px; margin: 0 auto; }
   .page.active { display: block !important; }
 
-  /* ── COVER PAGE ── */
-  #page-cover {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 48px 24px;
+  #page-welcome, #page-test-select, #page-intro-bukim, #page-intro-bune, #page-done {
+    flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 48px 24px;
   }
-  #page-cover.active { display: flex !important; }
+  #page-welcome.active, #page-test-select.active, #page-intro-bukim.active, #page-intro-bune.active, #page-done.active {
+    display: flex !important;
+  }
 
-  .cover-eyebrow {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  .cover-title {
-    font-size: clamp(2.8rem, 10vw, 5rem);
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-    color: #111;
-    margin-bottom: 8px;
-  }
-  .cover-subtitle {
-    font-size: clamp(1rem, 3vw, 1.3rem);
-    color: #555;
-    margin-bottom: 32px;
-    line-height: 1.5;
-  }
+  .cover-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #888; margin-bottom: 20px; }
+  .cover-title { font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 800; letter-spacing: -2px; line-height: 1; color: #111; margin-bottom: 8px; }
+  .cover-subtitle { font-size: clamp(1rem, 3vw, 1.2rem); color: #555; margin-bottom: 28px; line-height: 1.5; }
   .cover-desc {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px 24px;
-    font-size: 0.95rem;
-    color: #444;
-    line-height: 1.7;
-    max-width: 480px;
-    margin-bottom: 32px;
-    text-align: left;
+    background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 24px;
+    font-size: 0.95rem; color: #444; line-height: 1.7; max-width: 480px; margin-bottom: 32px; text-align: left;
   }
-  .cover-desc p + p { margin-top: 10px; }
 
-  /* ── BUTTONS ── */
   .btn-primary {
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 16px 40px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    width: 100%;
-    max-width: 320px;
+    background: #111; color: #fff; border: none; border-radius: 10px; padding: 16px 40px;
+    font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s;
+    width: 100%; max-width: 320px;
   }
   .btn-primary:hover { background: #333; }
   .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
 
   .btn-secondary {
-    background: transparent;
-    color: #111;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    padding: 14px 32px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.15s;
-    width: 100%;
-    max-width: 320px;
-    margin-top: 10px;
+    background: transparent; color: #111; border: 2px solid #ddd; border-radius: 10px; padding: 14px 32px;
+    font-size: 1rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s;
+    width: 100%; max-width: 320px; margin-top: 10px;
   }
   .btn-secondary:hover { border-color: #999; }
 
-  /* ── DEMOGRAPHICS ── */
-  .section-header {
-    margin-bottom: 28px;
+  .test-choice-row { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 340px; margin-bottom: 8px; }
+  .test-choice-btn {
+    background: #fff; border: 2px solid #ddd; border-radius: 14px; padding: 22px; cursor: pointer;
+    text-align: center; transition: border-color 0.15s, transform 0.1s;
   }
-  .section-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .section-header p {
-    color: #666;
-    font-size: 0.9rem;
-  }
+  .test-choice-btn:hover { border-color: #111; transform: translateY(-1px); }
+  .test-choice-btn .tc-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
 
-  .form-group {
-    margin-bottom: 22px;
-  }
-  .form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-  }
-  .form-group .hint {
-    display: block;
-    font-weight: 400;
-    color: #888;
-    font-size: 0.82rem;
-    margin-bottom: 8px;
-  }
+  .section-header { margin-bottom: 28px; }
+  .section-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+  .section-header p { color: #666; font-size: 0.9rem; }
 
-  input[type="number"],
-  input[type="text"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-family: inherit;
-    background: #fff;
-    transition: border-color 0.15s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #111;
-  }
+  .form-group { margin-bottom: 22px; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+  .form-group .hint { display: block; font-weight: 400; color: #888; font-size: 0.82rem; margin-bottom: 8px; }
 
-  .radio-group, .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  input[type="number"], input[type="text"], select, textarea {
+    width: 100%; padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem;
+    font-family: inherit; background: #fff; transition: border-color 0.15s; appearance: none; -webkit-appearance: none;
   }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #111; }
+
+  .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
   .radio-option, .checkbox-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    font-size: 0.95rem;
-    background: #fff;
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 8px;
+    cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 0.95rem; background: #fff;
   }
   .radio-option:hover, .checkbox-option:hover { border-color: #aaa; background: #fafafa; }
   .radio-option input, .checkbox-option input { accent-color: #111; width: 16px; height: 16px; }
-  .radio-option.selected, .checkbox-option.selected {
-    border-color: #111;
-    background: #f9f9f9;
-  }
+  .radio-option.selected, .checkbox-option.selected { border-color: #111; background: #f9f9f9; }
 
-  .other-input {
-    margin-top: 8px;
-    display: none;
-  }
+  .other-input { margin-top: 8px; display: none; }
   .other-input.visible { display: block !important; }
 
-  /* ── PROGRESS ── */
-  .progress-bar-wrap {
-    background: #e8e8e8;
-    border-radius: 99px;
-    height: 4px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: #111;
-    border-radius: 99px;
-    transition: width 0.4s ease;
-  }
-  .progress-label {
-    font-size: 0.8rem;
-    color: #888;
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-  }
+  .progress-bar-wrap { background: #e8e8e8; border-radius: 99px; height: 4px; margin-bottom: 24px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #111; border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 0.8rem; color: #888; margin-bottom: 6px; display: flex; justify-content: space-between; }
 
-  /* ── FACE PAGE ── */
-  #page-faces { padding-top: 20px; }
-
-  .face-card {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #e8e8e8;
-    margin-bottom: 20px;
-  }
+  #page-items { padding-top: 20px; }
+  .face-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #e8e8e8; margin-bottom: 20px; }
   .face-img-wrap {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    width: 100%; aspect-ratio: 1 / 1; background: #eee;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
-  .face-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .face-img-wrap .img-loading {
-    font-size: 0.85rem;
-    color: #aaa;
+  .face-img-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; background:#fff; }
+  .face-img-wrap .img-loading { font-size: 0.85rem; color: #aaa; }
+
+  .face-actions { padding: 20px; }
+  .face-question { font-weight: 600; font-size: 1rem; margin-bottom: 0; color: #222; }
+
+  .item-meta-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .item-meta { font-size: 0.78rem; color: #aaa; font-weight: 600; white-space: nowrap; }
+  .item-meta-nums { display: flex; align-items: center; gap: 14px; }
+  .item-timer { font-size: 0.78rem; color: #aaa; font-weight: 700; }
+  .item-timer.danger { color: #cc2222; }
+  .item-timer.pulse { animation: timerPulse 0.4s ease; }
+  @keyframes timerPulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.7); }
+    100% { transform: scale(1); }
   }
 
-  .face-actions {
-    padding: 20px;
-  }
-  .face-question {
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 14px;
-    color: #222;
-  }
-
-  .recognition-btns {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+  .recognition-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
   .rec-btn {
-    flex: 1;
-    min-width: 80px;
-    padding: 13px 8px;
-    border-radius: 10px;
-    border: 2px solid;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-    opacity: 0.75;
+    flex: 1; min-width: 80px; padding: 13px 8px; border-radius: 10px; border: 2px solid;
+    font-size: 0.86rem; font-weight: 600; cursor: pointer; transition: all 0.15s; text-align: center; opacity: 0.75;
   }
   .rec-btn:hover { opacity: 1; }
-  #btn_yes    { border-color: #1a7a3a; background: #f0fff4; color: #1a7a3a; }
+  #btn_know   { border-color: #1a7a3a; background: #f0fff4; color: #1a7a3a; }
   #btn_unsure { border-color: #d97706; background: #fffbeb; color: #d97706; }
   #btn_no     { border-color: #cc2222; background: #fff0f0; color: #cc2222; }
   .rec-btn.selected-yes    { background: #1a7a3a; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #a7f3c0; transform: scale(1.04); }
   .rec-btn.selected-unsure { background: #d97706; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #fde68a; transform: scale(1.04); }
   .rec-btn.selected-no     { background: #cc2222; color: #fff; opacity: 1; box-shadow: 0 0 0 3px #fca5a5; transform: scale(1.04); }
 
-  .name-input-wrap {
-    margin-top: 16px;
-    display: none;
-  }
-  .name-input-wrap.visible { display: block !important; }
-  .name-input-wrap label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    display: block;
-    color: #333;
-  }
+  .desc-input-wrap { margin-top: 16px; display: none; }
+  .desc-input-wrap.visible { display: block !important; }
+  .desc-input-wrap label { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; display: block; color: #333; }
 
-  .face-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 0 20px 20px;
+  .item-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 20px; }
+  .btn-next-item {
+    flex: 1; background: #111; color: #fff; border: none; border-radius: 10px; padding: 14px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
   }
-  .btn-next-face {
-    flex: 1;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-next-face:hover { background: #333; }
-  .btn-next-face:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-next-item:hover { background: #333; }
+  .btn-next-item:disabled { background: #ccc; cursor: not-allowed; }
 
-  /* ── THANK YOU ── */
-  #page-done {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    min-height: 100vh;
-    padding: 48px 24px;
-  }
-  #page-done.active { display: flex !important; }
-  .done-icon { font-size: 4rem; margin-bottom: 20px; }
-  .done-title { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
-  .done-msg { color: #555; line-height: 1.6; max-width: 380px; }
-
-  /* ── SUBMISSION STATUS ── */
-  .submit-status {
-    margin-top: 16px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    display: none;
-  }
-  .submit-status.sending { display: block; background: #f0f4ff; color: #3355cc; }
+  .submit-status { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 0.85rem; display: none; }
   .submit-status.success { display: block; background: #f0fff4; color: #1a7a3a; }
   .submit-status.error   { display: block; background: #fff0f0; color: #cc2222; }
 
-  /* ── UTILITIES ── */
-  .nav-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 28px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .required-note {
-    font-size: 0.8rem;
-    color: #999;
-    margin-bottom: 20px;
-  }
-
-  .error-msg {
-    font-size: 0.82rem;
-    color: #cc2222;
-    margin-top: 6px;
-    display: none;
-  }
+  .nav-row { display: flex; gap: 12px; margin-top: 28px; flex-direction: column; align-items: center; }
+  .required-note { font-size: 0.8rem; color: #999; margin-bottom: 20px; }
+  .error-msg { font-size: 0.82rem; color: #cc2222; margin-top: 6px; display: none; }
   .error-msg.visible { display: block !important; }
 
-  /* ── AÇIKLAMA SAYFASI ── */
-  #page-intro { padding: 24px 16px 48px; }
-  .intro-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; color: #111; }
-  .intro-text { font-size: 0.95rem; color: #444; line-height: 1.7; margin-bottom: 24px; }
-  .intro-scenarios { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
-  .scenario-card {
-    background: #fff;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    align-items: stretch;
-  }
-  .scenario-img {
-    width: 90px;
-    min-height: 90px;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-  }
-  .scenario-body { padding: 14px 16px; flex: 1; }
-  .scenario-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .scenario-label.green { color: #1a7a3a; }
-  .scenario-label.orange { color: #d97706; }
-  .scenario-label.red { color: #cc2222; }
-  .scenario-desc { font-size: 0.88rem; color: #555; line-height: 1.5; }
-
-  /* ── PERFORMANS SAYFASI ── */
-  #page-done {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    min-height: 100vh;
-    padding: 48px 24px;
-  }
-  #page-done.active { display: flex !important; }
-  .perf-grid {
-    display: flex;
-    gap: 12px;
-    margin: 24px 0;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .perf-card {
-    border-radius: 12px;
-    padding: 16px 20px;
-    min-width: 90px;
-    text-align: center;
-  }
+  .perf-block { width: 100%; max-width: 380px; margin-bottom: 28px; text-align: left; }
+  .perf-block h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; text-align: center; }
+  .perf-grid { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; justify-content: center; }
+  .perf-card { border-radius: 12px; padding: 14px 16px; min-width: 88px; text-align: center; }
   .perf-card.green  { background: #f0fff4; border: 2px solid #1a7a3a; }
   .perf-card.orange { background: #fffbeb; border: 2px solid #d97706; }
   .perf-card.red    { background: #fff0f0; border: 2px solid #cc2222; }
-  .perf-pct { font-size: 1.8rem; font-weight: 800; }
+  .perf-pct { font-size: 1.5rem; font-weight: 800; }
   .perf-pct.green  { color: #1a7a3a; }
   .perf-pct.orange { color: #d97706; }
   .perf-pct.red    { color: #cc2222; }
-  .perf-label { font-size: 0.78rem; color: #666; margin-top: 4px; }
+  .perf-label { font-size: 0.72rem; color: #666; margin-top: 4px; }
+  .perf-summary-text { font-size: 0.85rem; color: #555; text-align: center; margin-top: 6px; }
+
+  .done-icon { font-size: 4rem; margin-bottom: 20px; }
+  .done-title { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     SAYFA 1: KAPAK
-════════════════════════════════════════════ -->
-<div id="page-cover" class="page active">
+<!-- =========================================
+     SAYFA 0: HOŞ GELDİNİZ
+========================================= -->
+<div id="page-welcome" class="page active">
   <div class="cover-eyebrow">Araştırma Anketi</div>
-  <div class="cover-title">Bu Kim?</div>
-  <div class="cover-subtitle">Size göstereceğimiz ünlü yüzleri tanıyabilecek misiniz?</div>
-
+  <div class="cover-title">Hoş geldiniz</div>
   <div class="cover-desc">
-    <p><strong>Şimdi göreceğiniz ünlü yüzleri tanıyabilecek misiniz?</strong></p>
-    <br>
-    <p>Birazdan fotoğrafını göreceğiniz ünlü/meşhur kişilerin adlarını yazmanızı istiyoruz. Bu işlem 20 dk sürebilir ama eğlenceli. 50 yaşın üstündekilerin katılımını hedefliyoruz. Eğer bu yaşın altındaysanız anne-babanız veya 50 yaş üstü bir tanıdığınıza uygulayabilirsiniz. Anket bittiğinde performansınızın özetini görebileceksiniz.</p>
-    <br>
-    <p>Sizden isminiz istenmeyecek, sadece yaş, cinsiyet, eğitim gibi bilgiler istenecektir. Veriler sadece bilimsel araştırma için kullanılacak, kimseyle paylaşılmayacaktır. Katılım gönüllülük esaslıdır.</p>
-    <br>
-    <p><strong><u>Araştırmacılar</u></strong><br>
-    Doç. Dr. Erol Yıldırım (İst. Medipol Ünv. Psikoloji Bölümü)<br>
-    Psk. Melek Elcircevi (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)<br>
-    Psk. Ayşegül Kurtuluş (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)<br>
-    Psk. Z. Tara Ünal (İst. Medipol Ünv. Sinirbilim Anabilim Dalı)</p>
-    <br>
-    <p><strong><u>İletişim:</u></strong><br>
-    Melek Elcircevi &gt; <a href="mailto:melek.elcircevi@gmail.com">melek.elcircevi@gmail.com</a></p>
+    <p>Birazdan size bazı fotoğraflar göstereceğim. Bu fotoğraftakilerin ne olduğunu veya kim olduğunu soracağım. Bütün uygulama 20 dakika sürecek. Dilediğiniz yerde yarım bırakabilirsiniz. Size herhangi bir ücret ödenmeyecek veya ücret istenmeyecek. İsminizi kaydetmeyeceğiz, sadece yaş, cinsiyet, eğitim gibi bilgilerinizi kaydedeceğiz ve kimseyle paylaşmayacağız. Onaylıyorsanız başlayalım.</p>
   </div>
 
   <div id="resume_banner" style="display:none; background:#fff; border:1.5px solid #ddd; border-radius:12px; padding:18px 20px; max-width:400px; margin-bottom:20px; text-align:left;">
@@ -453,12 +176,96 @@
       <button class="btn-secondary" style="padding:12px 20px; font-size:0.9rem; margin-top:0;" onclick="doFresh()">Baştan Başla</button>
     </div>
   </div>
-  <button class="btn-primary" id="start_btn" onclick="showPage('page-demo')">Okudum, onayladım, katılmak istiyorum.</button>
+  <button class="btn-primary" id="start_btn" onclick="showPage('page-test-select')">Onaylıyorum</button>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SAYFA 2: DEMOGRAFİK BİLGİLER
-════════════════════════════════════════════ -->
+<!-- =========================================
+     SAYFA: TESTİ SEÇİN
+========================================= -->
+<div id="page-test-select" class="page">
+  <div class="cover-eyebrow">Adım 1</div>
+  <div class="cover-title" style="font-size: clamp(1.8rem, 7vw, 2.6rem);">Testi seçin</div>
+  <div class="test-choice-row">
+    <div class="test-choice-btn" onclick="selectTestOrder('bukim')">
+      <div class="tc-title">Bu Kim?</div>
+    </div>
+    <div class="test-choice-btn" onclick="selectTestOrder('bune')">
+      <div class="tc-title">Bu Ne?</div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================
+     SAYFA: BUKİM GİRİŞ
+========================================= -->
+<div id="page-intro-bukim" class="page">
+  <div class="cover-title" style="font-size: clamp(2.2rem, 8vw, 3.4rem);">Bu Kim?</div>
+  <div class="cover-desc" style="text-align:center;">
+    <p>Şimdi size bazı ünlü insanların fotoğraflarını göstereceğim, bunların kim olduğunu söyler misiniz.</p>
+  </div>
+  <button class="btn-primary" onclick="startTestItems()">Söylerim, başlayalım.</button>
+</div>
+
+<!-- =========================================
+     SAYFA: BUNE GİRİŞ
+========================================= -->
+<div id="page-intro-bune" class="page">
+  <div class="cover-title" style="font-size: clamp(2.2rem, 8vw, 3.4rem);">Bu Ne?</div>
+  <div class="cover-desc" style="text-align:center;">
+    <p>Şimdi size bazı fotoğraflar göstereceğim, bunların ne olduğunu söyler misiniz.</p>
+  </div>
+  <button class="btn-primary" onclick="startTestItems()">Söylerim, başlayalım.</button>
+</div>
+
+<!-- =========================================
+     SAYFA: GÖRSELLER (BuKim ve BuNe ortak şablon)
+========================================= -->
+<div id="page-items" class="page">
+  <div class="progress-label">
+    <span id="prog_label">1 / 1</span>
+    <span id="prog_pct">0%</span>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="prog_fill" style="width:0%"></div>
+  </div>
+
+  <div class="face-card">
+    <div class="face-img-wrap">
+      <span class="img-loading" id="img_loading">Yükleniyor…</span>
+      <img id="item_img" src="" alt="Görsel" style="display:none"
+           onload="document.getElementById('img_loading').style.display='none'; this.style.display='block'; onImageVisible();"
+           onerror="document.getElementById('img_loading').textContent='Görsel yüklenemedi';">
+    </div>
+    <div class="face-actions">
+      <div class="item-meta-row">
+        <div class="face-question" id="item_question">Bu ne?</div>
+        <div class="item-meta-nums">
+          <div class="item-meta" id="item_number"></div>
+          <div class="item-timer" id="item_timer">0</div>
+        </div>
+      </div>
+
+      <div class="recognition-btns">
+        <button class="rec-btn" id="btn_know"   onclick="selectAnswer('know')">Adını söyledi</button>
+        <button class="rec-btn" id="btn_unsure" onclick="selectAnswer('unsure')">Tanıdı ama adını söyleyemedi</button>
+        <button class="rec-btn" id="btn_no"     onclick="selectAnswer('no')">Tanımadı</button>
+      </div>
+
+      <div class="desc-input-wrap" id="desc_wrap">
+        <label for="desc_input" id="desc_label">Bu şeyi tarif eder misiniz?</label>
+        <input type="text" id="desc_input" placeholder="">
+      </div>
+    </div>
+
+    <div class="item-nav" id="item_nav" style="display:none;">
+      <button class="btn-next-item" id="btn_next_item" onclick="confirmUnsure()" disabled>Kaydet ve Devam Et →</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================
+     SAYFA: DEMOGRAFİK BİLGİLER (en sonda)
+========================================= -->
 <div id="page-demo" class="page">
   <div class="section-header">
     <h2>Genel Bilgiler</h2>
@@ -466,14 +273,12 @@
   </div>
   <p class="required-note">* ile işaretli alanlar zorunludur.</p>
 
-  <!-- S1: Yaş -->
   <div class="form-group">
     <label for="q_yas">1. Yaşınız *</label>
     <input type="number" id="q_yas" placeholder="Örn: 34" min="10" max="110">
     <div class="error-msg" id="err_yas">Lütfen geçerli bir yaş giriniz.</div>
   </div>
 
-  <!-- S2: Cinsiyet -->
   <div class="form-group">
     <label>2. Cinsiyetiniz *</label>
     <div class="radio-group" id="q_cinsiyet">
@@ -483,12 +288,11 @@
     <div class="error-msg" id="err_cinsiyet">Lütfen bir seçenek işaretleyiniz.</div>
   </div>
 
-  <!-- S3: Eğitim -->
   <div class="form-group">
     <label for="q_egitim">3. Eğitim Düzeyiniz *</label>
     <span class="hint">Mezun olduğunuz son eğitim düzeyini işaretleyiniz.</span>
     <select id="q_egitim">
-      <option value="">— Seçiniz —</option>
+      <option value="">-- Seçiniz --</option>
       <option>Okur-yazar değilim</option>
       <option>İlkokul</option>
       <option>Ortaokul</option>
@@ -500,21 +304,18 @@
     <div class="error-msg" id="err_egitim">Lütfen eğitim düzeyinizi seçiniz.</div>
   </div>
 
-  <!-- S4: Yıl sayısı -->
   <div class="form-group">
     <label for="q_egitim_yil">4. İlkokul dahil kaç yıl eğitim aldınız? *</label>
     <input type="number" id="q_egitim_yil" placeholder="Örn: 12" min="0" max="30">
     <div class="error-msg" id="err_egitim_yil">Lütfen geçerli bir yıl sayısı giriniz.</div>
   </div>
 
-  <!-- S5: Meslek -->
   <div class="form-group">
     <label for="q_meslek">5. Mesleğiniz *</label>
     <input type="text" id="q_meslek" placeholder="Örn: Öğretmen, mühendis...">
     <div class="error-msg" id="err_meslek">Lütfen mesleğinizi giriniz.</div>
   </div>
 
-  <!-- S6: Gelir -->
   <div class="form-group">
     <label>6. Gelir Düzeyiniz *</label>
     <div class="radio-group" id="q_gelir">
@@ -527,7 +328,6 @@
     <div class="error-msg" id="err_gelir">Lütfen bir seçenek işaretleyiniz.</div>
   </div>
 
-  <!-- S7: Türkiye'de yaşama süresi -->
   <div class="form-group">
     <label>7. Toplam kaç yıl Türkiye'de yaşadınız / yaşıyorsunuz? *</label>
     <div class="radio-group" id="q_turkiye">
@@ -540,14 +340,12 @@
     <div class="error-msg" id="err_turkiye">Lütfen bir seçenek işaretleyiniz.</div>
   </div>
 
-  <!-- S8: Şehir -->
   <div class="form-group">
     <label for="q_sehir">8. Hayatınızın büyük çoğunluğunu hangi şehirde geçirdiniz? *</label>
     <input type="text" id="q_sehir" placeholder="Örn: İstanbul, Ankara...">
     <div class="error-msg" id="err_sehir">Lütfen şehir adı giriniz.</div>
   </div>
 
-  <!-- S9: Konum -->
   <div class="form-group">
     <label>9. Bu şehrin neresinde yaşadınız? *</label>
     <div class="radio-group" id="q_konum">
@@ -558,99 +356,13 @@
   </div>
 
   <div class="nav-row">
-    <button class="btn-primary" onclick="submitDemographics()">Devam Et →</button>
+    <button class="btn-primary" onclick="submitDemographics()">Bitir →</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SAYFA 2B: ANKET AÇIKLAMASI
-════════════════════════════════════════════ -->
-<div id="page-intro" class="page">
-  <div class="intro-title">Ankete başlamadan önce...</div>
-  <div class="intro-text">
-    Şimdi size art arda ünlü kişilerin fotoğrafları gösterilecek. Her fotoğraf için üç seçenekten birini seçin. <strong>Tanıyorum</strong> veya <strong>Tanımıyorum</strong> butonuna basıldığında otomatik olarak bir sonraki fotoğrafa geçilir. Katılımcı kişiyi tanıdığını söylüyor ama tam adını hatırlayamıyorsa <strong>Emin Değilim</strong> seçeneğini seçin ve katılımcının söylediklerini kutucuğa yazın.
-    <br><br>
-    Her fotoğrafın sol üst köşesinde bir numara görünecek — bu numara Drive'daki sırayla aynıdır, referans olarak kullanabilirsiniz. Herhangi bir nedenle uygulamayı yarıda bırakırsanız <strong>aynı cihaz ve tarayıcıyla</strong> tekrar açtığınızda kaldığınız yerden devam edebilirsiniz. Uygulama tamamlandığında performans özetini görebileceksiniz.
-  </div>
-
-  <div class="intro-scenarios">
-    <div class="scenario-card">
-      <div class="scenario-img" style="background:#f0fff4; font-size:1.5rem;">👤</div>
-      <div class="scenario-body">
-        <div class="scenario-label green">✓ Tanıyorum</div>
-        <div class="scenario-desc">Katılımcı kişiyi tanıyorsa seçin — otomatik sonraki fotoğrafa geçilir.</div>
-      </div>
-    </div>
-    <div class="scenario-card">
-      <div class="scenario-img" style="background:#fffbeb; font-size:1.5rem;">👤</div>
-      <div class="scenario-body">
-        <div class="scenario-label orange">? Emin Değilim</div>
-        <div class="scenario-desc">Kişiyi tanıdığını düşünüyor ama adını hatırlayamıyorsa seçin. Katılımcının söylediklerini kutucuğa yazıp "Kaydet ve Devam Et"e basın.</div>
-      </div>
-    </div>
-    <div class="scenario-card">
-      <div class="scenario-img" style="background:#fff0f0; font-size:1.5rem;">👤</div>
-      <div class="scenario-body">
-        <div class="scenario-label red">✗ Tanımıyorum</div>
-        <div class="scenario-desc">Katılımcı kişiyi tanımıyorsa seçin — otomatik sonraki fotoğrafa geçilir.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="nav-row">
-    <button class="btn-primary" onclick="startFaces()">Başla →</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     SAYFA 3: YÜZLER
-════════════════════════════════════════════ -->
-<div id="page-faces" class="page">
-
-  <div class="progress-label">
-    <span id="prog_label">Fotoğraf 1 / 96</span>
-    <span id="prog_pct">0%</span>
-  </div>
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="prog_fill" style="width:0%"></div>
-  </div>
-
-  <div class="face-card">
-    <div class="face-img-wrap">
-      <span class="img-loading" id="img_loading">Yükleniyor…</span>
-      <img id="face_img" src="" alt="Yüz fotoğrafı" style="display:none"
-           onload="document.getElementById('img_loading').style.display='none'; this.style.display='block';"
-           onerror="document.getElementById('img_loading').textContent='Fotoğraf yüklenemedi';">
-    </div>
-    <div class="face-actions">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-        <div class="face-question" style="margin-bottom:0;">Bu kişiyi tanıyor musunuz?</div>
-        <div id="photo_number" style="font-size:0.78rem; color:#aaa; font-weight:600; white-space:nowrap; margin-left:12px;"></div>
-      </div>
-      <div class="recognition-btns">
-        <button class="rec-btn" id="btn_yes"    onclick="selectRecognition('yes')">Tanıyorum</button>
-        <button class="rec-btn" id="btn_unsure" onclick="selectRecognition('unsure')">Emin Değilim</button>
-        <button class="rec-btn" id="btn_no"     onclick="selectRecognition('no')">Tanımıyorum</button>
-      </div>
-
-      <div class="name-input-wrap" id="name_wrap">
-        <label for="name_input">Bu kişi hakkında ne biliyorsunuz?</label>
-        <input type="text" id="name_input" placeholder="neyle ünlü? ne iş yapıyor">
-      </div>
-    </div>
-
-    <div class="face-nav" id="face_nav">
-      <button class="btn-next-face" id="btn_next" onclick="nextFace()" disabled>
-        Kaydet ve Devam Et →
-      </button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ══════════════════════════════════════════
+<!-- =========================================
      SAYFA: GÖNDERİLİYOR
-════════════════════════════════════════════ -->
+========================================= -->
 <div id="page-sending" class="page">
   <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; text-align:center; padding:48px 24px;">
     <div style="font-size:3rem; margin-bottom:24px;">⏳</div>
@@ -660,146 +372,223 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SAYFA 4: BİTİŞ
-════════════════════════════════════════════ -->
+<!-- =========================================
+     SAYFA: BİTİŞ / PERFORMANS
+========================================= -->
 <div id="page-done" class="page">
   <div class="done-icon">🎉</div>
   <div class="done-title">Tebrikler, tamamladınız!</div>
 
-  <canvas id="perf_chart" style="margin: 20px auto; display:block;"></canvas>
+  <div class="perf-block">
+    <h3>Bu Kim? sonucu</h3>
+    <div class="perf-grid" id="perf_grid_bukim"></div>
+    <div class="perf-summary-text" id="perf_text_bukim"></div>
+  </div>
 
-  <div style="font-size:0.92rem; color:#555; line-height:1.7; max-width:360px; text-align:center;" id="perf_detail"></div>
+  <div class="perf-block">
+    <h3>Bu Ne? sonucu</h3>
+    <div class="perf-grid" id="perf_grid_bune"></div>
+    <div class="perf-summary-text" id="perf_text_bune"></div>
+  </div>
+
   <div class="submit-status" id="submit_status"></div>
 </div>
 
-<!-- ══════════════════════════════════════════
+<!-- =========================================
      JAVASCRIPT
-════════════════════════════════════════════ -->
+========================================= -->
 <script>
-// ── GOOGLE SHEETS ENTEGRASYONU ──────────────────────────
-// Aşağıdaki URL'yi Google Apps Script web app URL'iniz ile değiştirin.
-// Kurulum talimatları: bu dosya ile birlikte gönderilen README'ye bakın.
-const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzN89tO3H0UQkmuz6Ud7pvksxzaAwco41oeKkx_3k412HXjVAwM1SqkGxZxHm-b119k-Q/exec";
-// ────────────────────────────────────────────────────────
+// -- GOOGLE SHEETS ENTEGRASYONU (mevcut sheet'lere yazmaya devam eder) --
+const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbzGAh5-sMcC6PJ9a2gdhyUjccJHPqHYcqUYJYZp3wE2QZHRypEdL-nGa0PispUH2ttp/exec";
+const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbySGcNeH-AQwC518VYYw-6Ws0y3jLDm6HwjxjtV0ZsI-9VLjvOfM4Q7aeb5QI7NUKod/exec";
 
 const PHOTOS = [
-  { id: "1tOZ74T3V8Sjsr2iF2SxMnCuSqstkTh0_", name: "1 Abdullah Gül", url: "https://lh3.googleusercontent.com/d/1tOZ74T3V8Sjsr2iF2SxMnCuSqstkTh0_=w800" },
-  { id: "1hvYGv3ZDd1LynevpTkNtAo5kiiNYexB6", name: "2 Adile Naşit", url: "https://lh3.googleusercontent.com/d/1hvYGv3ZDd1LynevpTkNtAo5kiiNYexB6=w800" },
-  { id: "1DtdbAFK5L3oY3Y-jjokMNfWgqCArWvzH", name: "3 Adnan Menderes", url: "https://lh3.googleusercontent.com/d/1DtdbAFK5L3oY3Y-jjokMNfWgqCArWvzH=w800" },
-  { id: "1D_j2d50-IoOXjZ5CS_veFwmGXROXo4sc", name: "4 Ahmet Kaya (gözlüklü)", url: "https://lh3.googleusercontent.com/d/1D_j2d50-IoOXjZ5CS_veFwmGXROXo4sc=w800" },
-  { id: "18Gkcj1mx4VgJ7vYGNTNjMWkIqr1DSoIX", name: "5 Ajda Pekkan", url: "https://lh3.googleusercontent.com/d/18Gkcj1mx4VgJ7vYGNTNjMWkIqr1DSoIX=w800" },
-  { id: "19yPokVKHAH2SGc7C_12yRYwevLlyieOI", name: "6 Albert Einstein", url: "https://lh3.googleusercontent.com/d/19yPokVKHAH2SGc7C_12yRYwevLlyieOI=w800" },
-  { id: "1CramjGG7fwGAzuWaV8j5zuEsFqWUZSDs", name: "7 Alparslan Türkeş", url: "https://lh3.googleusercontent.com/d/1CramjGG7fwGAzuWaV8j5zuEsFqWUZSDs=w800" },
-  { id: "1wXsijDRy0ou3WT4U1kY-X__i5s0GQr1j", name: "8 Angela Merkel", url: "https://lh3.googleusercontent.com/d/1wXsijDRy0ou3WT4U1kY-X__i5s0GQr1j=w800" },
-  { id: "1yWBkYK5dzXrIGu8Sm9xtGWcjhSwketCG", name: "9 Arda Güler", url: "https://lh3.googleusercontent.com/d/1yWBkYK5dzXrIGu8Sm9xtGWcjhSwketCG=w800" },
-  { id: "1Os_otJoLGuGvO-M6BGSHzXwaX1qlaOzT", name: "10 Arda Turan", url: "https://lh3.googleusercontent.com/d/1Os_otJoLGuGvO-M6BGSHzXwaX1qlaOzT=w800" },
-  { id: "1nf5breH-rHnmQ3Ry3YqyiBUCPJWOK0QN", name: "11 Attila İlhan", url: "https://lh3.googleusercontent.com/d/1nf5breH-rHnmQ3Ry3YqyiBUCPJWOK0QN=w800" },
-  { id: "1J5HRnMJwxKOwgT5lT-rQ0HMoAXQppdjE", name: "12 Ayhan Işık", url: "https://lh3.googleusercontent.com/d/1J5HRnMJwxKOwgT5lT-rQ0HMoAXQppdjE=w800" },
-  { id: "14uqnbVTRyzPoExs2nxiKR1nxhNbXpf8H", name: "13 Aziz Sancar", url: "https://lh3.googleusercontent.com/d/14uqnbVTRyzPoExs2nxiKR1nxhNbXpf8H=w800" },
-  { id: "1gWNrdW_G9rWXpnZz0dZSm7IftcjxtfaY", name: "14 Barack Obama", url: "https://lh3.googleusercontent.com/d/1gWNrdW_G9rWXpnZz0dZSm7IftcjxtfaY=w800" },
-  { id: "1IFxu-9EeBmz7i5c6gEZb6OpRTi_puVo1", name: "15 Barış Manço", url: "https://lh3.googleusercontent.com/d/1IFxu-9EeBmz7i5c6gEZb6OpRTi_puVo1=w800" },
-  { id: "1GJnLlmvrBGjhS1_UomtARrtpTg0eSIsA", name: "16 Bülent Ecevit", url: "https://lh3.googleusercontent.com/d/1GJnLlmvrBGjhS1_UomtARrtpTg0eSIsA=w800" },
-  { id: "1oIAqzdOk53E8cMS5YDWsEdYk80L3YSSl", name: "17 Bülent Ersoy", url: "https://lh3.googleusercontent.com/d/1oIAqzdOk53E8cMS5YDWsEdYk80L3YSSl=w800" },
-  { id: "1A2AMnBs4B5Se4hWuKAb5ayWwjwLaOR6O", name: "17 Bülent Ersoy (yeni)", url: "https://lh3.googleusercontent.com/d/1A2AMnBs4B5Se4hWuKAb5ayWwjwLaOR6O=w800" },
-  { id: "14Z7arx3cUKj6Xz9l9A-IgghpDnX-bzYa", name: "18 Cem Karaca", url: "https://lh3.googleusercontent.com/d/14Z7arx3cUKj6Xz9l9A-IgghpDnX-bzYa=w800" },
-  { id: "1ZtwUI4ks3aAZylGG0Fb5-5T_HbyIzbEh", name: "19 Cem Yılmaz", url: "https://lh3.googleusercontent.com/d/1ZtwUI4ks3aAZylGG0Fb5-5T_HbyIzbEh=w800" },
-  { id: "1OxkpXZ5XEl2Fj8SoNBgOZKi2PZQ0Epqj", name: "20 Cristiano Ronaldo", url: "https://lh3.googleusercontent.com/d/1OxkpXZ5XEl2Fj8SoNBgOZKi2PZQ0Epqj=w800" },
-  { id: "1B34b2DoI0P-04ScVC4AZczuT7mUTUbkz", name: "21 Cüneyt Arkın", url: "https://lh3.googleusercontent.com/d/1B34b2DoI0P-04ScVC4AZczuT7mUTUbkz=w800" },
-  { id: "126v5ln6uEb_CVGkqbbUkDy8vLdRCIKVr", name: "22 Deniz Baykal", url: "https://lh3.googleusercontent.com/d/126v5ln6uEb_CVGkqbbUkDy8vLdRCIKVr=w800" },
-  { id: "1D4kfbqS0XyUVm8fLlKx4Gy2-UJ5TIabO", name: "23 Devlet Bahçeli", url: "https://lh3.googleusercontent.com/d/1D4kfbqS0XyUVm8fLlKx4Gy2-UJ5TIabO=w800" },
-  { id: "1-0kN8o2gwCq8_nTkj_O91dVIzla3Qv1Q", name: "24 Donald Trump", url: "https://lh3.googleusercontent.com/d/1-0kN8o2gwCq8_nTkj_O91dVIzla3Qv1Q=w800" },
-  { id: "1WpW3jYYQR1y_NXtpDcwisBdV8RxyntJo", name: "25 Ediz Hun (genç)", url: "https://lh3.googleusercontent.com/d/1WpW3jYYQR1y_NXtpDcwisBdV8RxyntJo=w800" },
-  { id: "1eoZ6m1chFSnpWrm_53go5KIm-s8qsHZO", name: "26 Ekrem İmamoğlu", url: "https://lh3.googleusercontent.com/d/1eoZ6m1chFSnpWrm_53go5KIm-s8qsHZO=w800" },
-  { id: "1HlMHUGUOhkNIDdwvXBk3Tmf2aNME8p3Z", name: "27 Emel Sayın (genç)", url: "https://lh3.googleusercontent.com/d/1HlMHUGUOhkNIDdwvXBk3Tmf2aNME8p3Z=w800" },
-  { id: "1o143NXQm0OevwMjegQbgBhPQWq2VZIN6", name: "27 Emel Sayın (yaşlı)", url: "https://lh3.googleusercontent.com/d/1o143NXQm0OevwMjegQbgBhPQWq2VZIN6=w800" },
-  { id: "1enezAVXrONsjvYIRpz7EfFDzL8nQtJqm", name: "28 Erdal İnönü", url: "https://lh3.googleusercontent.com/d/1enezAVXrONsjvYIRpz7EfFDzL8nQtJqm=w800" },
-  { id: "1_O0Xyi3xiaJ7C7o5A6154RgtvCTM55lb", name: "29 Fatih Terim", url: "https://lh3.googleusercontent.com/d/1_O0Xyi3xiaJ7C7o5A6154RgtvCTM55lb=w800" },
-  { id: "1v5D3NgdFdRUHqdaAx86vahSKgNzyTgrk", name: "30 Fatma Girik (genç)", url: "https://lh3.googleusercontent.com/d/1v5D3NgdFdRUHqdaAx86vahSKgNzyTgrk=w800" },
-  { id: "1TE6cEPz26GT-4JE0Xgi6Jnpnmm4Kw8ZV", name: "31 Ferdi Tayfur", url: "https://lh3.googleusercontent.com/d/1TE6cEPz26GT-4JE0Xgi6Jnpnmm4Kw8ZV=w800" },
-  { id: "1kqq-p0HBrafIZJ9JMAKvUTMNJreirKhq", name: "32 Fikret Hakan", url: "https://lh3.googleusercontent.com/d/1kqq-p0HBrafIZJ9JMAKvUTMNJreirKhq=w800" },
-  { id: "1XHH0gBs91BrIJqZuo2eyxVj2kW-aBOy9", name: "33 Filiz Akın", url: "https://lh3.googleusercontent.com/d/1XHH0gBs91BrIJqZuo2eyxVj2kW-aBOy9=w800" },
-  { id: "1EilbzfKofrhr_a4qM91SgbuckCDd_V04", name: "34 Gülşen Bubikoğlu", url: "https://lh3.googleusercontent.com/d/1EilbzfKofrhr_a4qM91SgbuckCDd_V04=w800" },
-  { id: "1zkb5meYjOMCLJIPDeZZVpEQHpeAFYjSD", name: "35 Haluk Bilginer", url: "https://lh3.googleusercontent.com/d/1zkb5meYjOMCLJIPDeZZVpEQHpeAFYjSD=w800" },
-  { id: "12kcFC4l77V1LO9d53gxSNTCTbdzq_gO6", name: "36 Hulusi Kentmen", url: "https://lh3.googleusercontent.com/d/12kcFC4l77V1LO9d53gxSNTCTbdzq_gO6=w800" },
-  { id: "1KZOHoNIDWi3e5XwH3LsjPo8vwZV3bSwQ", name: "37 Hülya Avşar", url: "https://lh3.googleusercontent.com/d/1KZOHoNIDWi3e5XwH3LsjPo8vwZV3bSwQ=w800" },
-  { id: "1S0FGJyZNAv5WduTwmA-gUkrQAy88Y7gP", name: "38 Hülya Koçyiğit (genç)", url: "https://lh3.googleusercontent.com/d/1S0FGJyZNAv5WduTwmA-gUkrQAy88Y7gP=w800" },
-  { id: "1zBlGimloi88-WScEdUi7oTXxI08bYpNw", name: "39 İbrahim Tatlıses", url: "https://lh3.googleusercontent.com/d/1zBlGimloi88-WScEdUi7oTXxI08bYpNw=w800" },
-  { id: "1lM9iq-xx97zjyQdEKEWpbwBLhznZLA0v", name: "40 İlber Ortaylı", url: "https://lh3.googleusercontent.com/d/1lM9iq-xx97zjyQdEKEWpbwBLhznZLA0v=w800" },
-  { id: "1SvL0jwi3KjAUvV80Ptn-V98giVuNKSI0", name: "41 İsmet İnönü", url: "https://lh3.googleusercontent.com/d/1SvL0jwi3KjAUvV80Ptn-V98giVuNKSI0=w800" },
-  { id: "1dB7lodBU4n9cjR__6Z007yNPeyId9LsA", name: "42 J.F. Kennedy", url: "https://lh3.googleusercontent.com/d/1dB7lodBU4n9cjR__6Z007yNPeyId9LsA=w800" },
-  { id: "1HAb8iuCTigHcUXXUp6mh7ue_aT27dMTR", name: "43 Kadir İnanır (genç)", url: "https://lh3.googleusercontent.com/d/1HAb8iuCTigHcUXXUp6mh7ue_aT27dMTR=w800" },
-  { id: "1aUtG8EbRkTuzI_rmwWvqMl7OQQQT_cVB", name: "44 Kartal Tibet", url: "https://lh3.googleusercontent.com/d/1aUtG8EbRkTuzI_rmwWvqMl7OQQQT_cVB=w800" },
-  { id: "1YsAy7ovmPmo7NHLk8aZgi-jlL2QmH-vz", name: "45 Kemal Kılıçdaroğlu", url: "https://lh3.googleusercontent.com/d/1YsAy7ovmPmo7NHLk8aZgi-jlL2QmH-vz=w800" },
-  { id: "1Lh1OkqVIyzSXRbBpoUp4UzdIH_neVQPS", name: "46 Kemal Sunal", url: "https://lh3.googleusercontent.com/d/1Lh1OkqVIyzSXRbBpoUp4UzdIH_neVQPS=w800" },
-  { id: "17SuAsRAIiXYTwHj2ssdJedDiJtZfwwbO", name: "47 Kenan Evren", url: "https://lh3.googleusercontent.com/d/17SuAsRAIiXYTwHj2ssdJedDiJtZfwwbO=w800" },
-  { id: "10u5aslzvcce--eTd6vhhIZcOsJcXfCdj", name: "48 Kenan İmirzalıoğlu", url: "https://lh3.googleusercontent.com/d/10u5aslzvcce--eTd6vhhIZcOsJcXfCdj=w800" },
-  { id: "1yOXmatO09afQGAwxAAXb105VgkxoT1aJ", name: "49 Maradona", url: "https://lh3.googleusercontent.com/d/1yOXmatO09afQGAwxAAXb105VgkxoT1aJ=w800" },
-  { id: "1JtHFzevQ4cWwJ-GHStlm1U4Hp09rJjuk", name: "50 Margaret Thatcher", url: "https://lh3.googleusercontent.com/d/1JtHFzevQ4cWwJ-GHStlm1U4Hp09rJjuk=w800" },
-  { id: "1_zgdaTgU2sCYtcR27SNUmA_SKD1D2_-z", name: "51 Marie Curie", url: "https://lh3.googleusercontent.com/d/1_zgdaTgU2sCYtcR27SNUmA_SKD1D2_-z=w800" },
-  { id: "11WT57m4BL9JjygldE1EZdNiV8-y9G_A9", name: "52 Mehmet Akif Ersoy", url: "https://lh3.googleusercontent.com/d/11WT57m4BL9JjygldE1EZdNiV8-y9G_A9=w800" },
-  { id: "1nD16MNDH38jWE2EKmvtaWNaYxKOW8mLG", name: "53 Mesut Yılmaz", url: "https://lh3.googleusercontent.com/d/1nD16MNDH38jWE2EKmvtaWNaYxKOW8mLG=w800" },
-  { id: "12LdHCfRCN_MYqPIj60yP6qEEQ8X6jlJX", name: "54 Metin Akpınar", url: "https://lh3.googleusercontent.com/d/12LdHCfRCN_MYqPIj60yP6qEEQ8X6jlJX=w800" },
-  { id: "1e53v4ZvQ9cn5_GU7h8gxa_kAVr3-LuD0", name: "55 Metin Oktay", url: "https://lh3.googleusercontent.com/d/1e53v4ZvQ9cn5_GU7h8gxa_kAVr3-LuD0=w800" },
-  { id: "1XoPJd_q9JVhnxFg7Zy5BDJsYk8gzYSM8", name: "56 Metin Tekin", url: "https://lh3.googleusercontent.com/d/1XoPJd_q9JVhnxFg7Zy5BDJsYk8gzYSM8=w800" },
-  { id: "1YI56gBG01TZlKjovZdZSR4domzJpyar8", name: "57 Muazzez Abacı", url: "https://lh3.googleusercontent.com/d/1YI56gBG01TZlKjovZdZSR4domzJpyar8=w800" },
-  { id: "15Rg6qUTeyAzeK_MQ27mG-HGxB9WGXjpA", name: "57 Muazzez Abacı (yaşlılığı)", url: "https://lh3.googleusercontent.com/d/15Rg6qUTeyAzeK_MQ27mG-HGxB9WGXjpA=w800" },
-  { id: "16vB5CAA0e4j7NS1Pe8Td4U23SPv7l1s1", name: "58 Muazzez Ersoy", url: "https://lh3.googleusercontent.com/d/16vB5CAA0e4j7NS1Pe8Td4U23SPv7l1s1=w800" },
-  { id: "14u1Ruw_iUyEWpo76dorN9YtMLu-1Y4ZF", name: "59 Muhammed Ali", url: "https://lh3.googleusercontent.com/d/14u1Ruw_iUyEWpo76dorN9YtMLu-1Y4ZF=w800" },
-  { id: "11yrNJPX0qG5kO6-XzuHsJaTqwt7OdXPi", name: "60 Muhsin Yazıcıoğlu", url: "https://lh3.googleusercontent.com/d/11yrNJPX0qG5kO6-XzuHsJaTqwt7OdXPi=w800" },
-  { id: "1n0SqZ8wOWGxJoGmKCnh5rU5vkUh-YNv-", name: "61 Müslüm Gürses", url: "https://lh3.googleusercontent.com/d/1n0SqZ8wOWGxJoGmKCnh5rU5vkUh-YNv-=w800" },
-  { id: "1NAGJdQ9Spm23kFHbexBFlsXerx2r9hUr", name: "62 Naim Süleymanoğlu", url: "https://lh3.googleusercontent.com/d/1NAGJdQ9Spm23kFHbexBFlsXerx2r9hUr=w800" },
-  { id: "1NGIt7ua1qAsQzRJQdMATxxvzPGgDWqr7", name: "63 Nazım Hikmet", url: "https://lh3.googleusercontent.com/d/1NGIt7ua1qAsQzRJQdMATxxvzPGgDWqr7=w800" },
-  { id: "14p1Yl3eA4yf8FualoxEF0vYwQg9OsJnw", name: "64 Necip Fazıl Kısakürek", url: "https://lh3.googleusercontent.com/d/14p1Yl3eA4yf8FualoxEF0vYwQg9OsJnw=w800" },
-  { id: "1yX0Jfe2p-Ee2qn9clg9rFON84vnkTR6G", name: "65 Necmettin Erbakan", url: "https://lh3.googleusercontent.com/d/1yX0Jfe2p-Ee2qn9clg9rFON84vnkTR6G=w800" },
-  { id: "1vfhbM4IEyyxwG0U0vqYpQID5i4u9WGrO", name: "66 Neşe Karaböcek", url: "https://lh3.googleusercontent.com/d/1vfhbM4IEyyxwG0U0vqYpQID5i4u9WGrO=w800" },
-  { id: "10lkiZDNpS1Bk7SLIewjih4IwIua60o7Y", name: "67 Neşet Ertaş", url: "https://lh3.googleusercontent.com/d/10lkiZDNpS1Bk7SLIewjih4IwIua60o7Y=w800" },
-  { id: "1xZsPR9VUezXsr0chpO9cUMImPnNbJJpd", name: "68 Orhan Gencebay", url: "https://lh3.googleusercontent.com/d/1xZsPR9VUezXsr0chpO9cUMImPnNbJJpd=w800" },
-  { id: "1m4DZYJ4PO49TRpjjSIAE3ekpJBC0cr5a", name: "69 Orhan Pamuk", url: "https://lh3.googleusercontent.com/d/1m4DZYJ4PO49TRpjjSIAE3ekpJBC0cr5a=w800" },
-  { id: "1oo7LJgSXJosZzN4k7GRUn4vFcrlDYou1", name: "70 Orhan Veli Kanık", url: "https://lh3.googleusercontent.com/d/1oo7LJgSXJosZzN4k7GRUn4vFcrlDYou1=w800" },
-  { id: "1sSn-L1N-qWXF3oP6b5IEpYjXHLfnxW2k", name: "71 Özgür Özel", url: "https://lh3.googleusercontent.com/d/1sSn-L1N-qWXF3oP6b5IEpYjXHLfnxW2k=w800" },
-  { id: "1YNf6daU7p4Kv5RSZMNE5GQMrCHjsdpZ5", name: "72 Pele", url: "https://lh3.googleusercontent.com/d/1YNf6daU7p4Kv5RSZMNE5GQMrCHjsdpZ5=w800" },
-  { id: "1FGm1tl320eTEqBo6o-LfWNt6p1NIfWBs", name: "73 Perihan Savaş (genç)", url: "https://lh3.googleusercontent.com/d/1FGm1tl320eTEqBo6o-LfWNt6p1NIfWBs=w800" },
-  { id: "1pKuxmP-yT4dYrvFZCSiz0Hq4h3q6ZC6v", name: "74 Putin", url: "https://lh3.googleusercontent.com/d/1pKuxmP-yT4dYrvFZCSiz0Hq4h3q6ZC6v=w800" },
-  { id: "1AbKW-2Feo3aEdDrYWFSkxBLI5KD1hc90", name: "75 Rıdvan Dilmen", url: "https://lh3.googleusercontent.com/d/1AbKW-2Feo3aEdDrYWFSkxBLI5KD1hc90=w800" },
-  { id: "1SA5ZP-qLDRjTbXUZHpIg5XfmLV7wZyLc", name: "76 Robert De Niro", url: "https://lh3.googleusercontent.com/d/1SA5ZP-qLDRjTbXUZHpIg5XfmLV7wZyLc=w800" },
-  { id: "1Dug2PIhyY8Bc2Q28Q5DoQL3lucbnje_b", name: "77 Saddam Hüseyin", url: "https://lh3.googleusercontent.com/d/1Dug2PIhyY8Bc2Q28Q5DoQL3lucbnje_b=w800" },
-  { id: "1YClnRZKw0Gxu2qb-TO5-lA0PYFiVOJ92", name: "78 Sergen Yalçın", url: "https://lh3.googleusercontent.com/d/1YClnRZKw0Gxu2qb-TO5-lA0PYFiVOJ92=w800" },
-  { id: "1aYinW2BS2RzFwHolXq_Y8AkylIaU7aIq", name: "79 Sezen Aksu", url: "https://lh3.googleusercontent.com/d/1aYinW2BS2RzFwHolXq_Y8AkylIaU7aIq=w800" },
-  { id: "1isKYME-WhmSuCBHQ_w-BxyREg8hQ9sm9", name: "80 Sibel Can", url: "https://lh3.googleusercontent.com/d/1isKYME-WhmSuCBHQ_w-BxyREg8hQ9sm9=w800" },
-  { id: "1sjKdN6NggbeoLedQfJ6SEdQmFmUfGPIn", name: "81 Süleyman Demirel", url: "https://lh3.googleusercontent.com/d/1sjKdN6NggbeoLedQfJ6SEdQmFmUfGPIn=w800" },
-  { id: "150eeUSAPMgqO_tZrsB0JPsTz2lMVz0Hw", name: "82 Şener Şen", url: "https://lh3.googleusercontent.com/d/150eeUSAPMgqO_tZrsB0JPsTz2lMVz0Hw=w800" },
-  { id: "1ee3aIcp6hrJCtqMwVQSCUoslerQxrMiE", name: "83 Tanju Çolak (genç)", url: "https://lh3.googleusercontent.com/d/1ee3aIcp6hrJCtqMwVQSCUoslerQxrMiE=w800" },
-  { id: "1lYnX-buR6RSLg3zVY0whgDsj5e9SMAV5", name: "84 Tanju Çolak (yaşlı)", url: "https://lh3.googleusercontent.com/d/1lYnX-buR6RSLg3zVY0whgDsj5e9SMAV5=w800" },
-  { id: "1y0gW4tIR0I7j30EE_HTgta_jTTpb1jsp", name: "85 Tansu Çiller", url: "https://lh3.googleusercontent.com/d/1y0gW4tIR0I7j30EE_HTgta_jTTpb1jsp=w800" },
-  { id: "1S4Ipdt2V5Df3SOhZgdOjuQdijH36azsn", name: "86 Tarık Akan", url: "https://lh3.googleusercontent.com/d/1S4Ipdt2V5Df3SOhZgdOjuQdijH36azsn=w800" },
-  { id: "1sIFMRca82FAISvzbIwyXw4eCFcF0uYpp", name: "87 Tarkan", url: "https://lh3.googleusercontent.com/d/1sIFMRca82FAISvzbIwyXw4eCFcF0uYpp=w800" },
-  { id: "1d2AYQkFhNwUWONLK34ypHMiOM2qIwB6z", name: "88 Turgut Özal", url: "https://lh3.googleusercontent.com/d/1d2AYQkFhNwUWONLK34ypHMiOM2qIwB6z=w800" },
-  { id: "1O5NFruX8HRMikQNbA8EKArmRSqW3a0Gm", name: "89 Türkan Şoray", url: "https://lh3.googleusercontent.com/d/1O5NFruX8HRMikQNbA8EKArmRSqW3a0Gm=w800" },
-  { id: "11iouSiEKtaUoOtlIcD-o8by__WAhJeF9", name: "90 Winston Churchill", url: "https://lh3.googleusercontent.com/d/11iouSiEKtaUoOtlIcD-o8by__WAhJeF9=w800" },
-  { id: "1d1uvwdu9WMiK0ngPTGvpk3Ulwt_eX8Z9", name: "91 Yaşar Kemal", url: "https://lh3.googleusercontent.com/d/1d1uvwdu9WMiK0ngPTGvpk3Ulwt_eX8Z9=w800" },
-  { id: "1NeYHFR5fQqkdvSs5n1b1XnTzbYHmXf59", name: "92 Zeki Alasya", url: "https://lh3.googleusercontent.com/d/1NeYHFR5fQqkdvSs5n1b1XnTzbYHmXf59=w800" },
-  { id: "10uH6_lGTxi58k3mwkm0dz6HGGZXL6XNV", name: "93 Zülfü Livaneli", url: "https://lh3.googleusercontent.com/d/10uH6_lGTxi58k3mwkm0dz6HGGZXL6XNV=w800" },
-  { id: "1wAAda9Odyi_RM0ykM_qY00BcLBHLmuzI", name: "94 Mustafa Kemal Atatürk", url: "https://lh3.googleusercontent.com/d/1wAAda9Odyi_RM0ykM_qY00BcLBHLmuzI=w800" },
-  { id: "1-HWiP-X5OeJXAFdOEJi4boMEp2X4O4rd", name: "95 Recep Tayyip Erdoğan", url: "https://lh3.googleusercontent.com/d/1-HWiP-X5OeJXAFdOEJi4boMEp2X4O4rd=w800" },
-  { id: "1e5aplhqk47XozVSsNBSMDjyu6sbB0L7k", name: "96 Zeki Müren", url: "https://lh3.googleusercontent.com/d/1e5aplhqk47XozVSsNBSMDjyu6sbB0L7k=w800" },
+  { no: 1, name: "Abdullah Gül", id: "1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq", url: "https://lh3.googleusercontent.com/d/1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq=w800" },
+  { no: 2, name: "Adile Naşit", id: "1UGNa8SojqQvXg2MiydKjucPKgOkpRqQ_", url: "https://lh3.googleusercontent.com/d/1UGNa8SojqQvXg2MiydKjucPKgOkpRqQ_=w800" },
+  { no: 3, name: "Adnan Menderes", id: "1aYU_RbLpn5eAXYL4yp21LNmU0PSzRn2t", url: "https://lh3.googleusercontent.com/d/1aYU_RbLpn5eAXYL4yp21LNmU0PSzRn2t=w800" },
+  { no: 4, name: "Ahmet Kaya_gözlüklü", id: "1z_Q0vDqg6rSc-C8koUcQZJX9naqtNfp_", url: "https://lh3.googleusercontent.com/d/1z_Q0vDqg6rSc-C8koUcQZJX9naqtNfp_=w800" },
+  { no: 5, name: "Ajda Pekkan", id: "1kgPyF5AcAZsaNs0NBFrrlnpJBdIVzy05", url: "https://lh3.googleusercontent.com/d/1kgPyF5AcAZsaNs0NBFrrlnpJBdIVzy05=w800" },
+  { no: 6, name: "Albert Einstein", id: "1suyozLxhIfXVKX0cdPfIdjeewoXWTy6Y", url: "https://lh3.googleusercontent.com/d/1suyozLxhIfXVKX0cdPfIdjeewoXWTy6Y=w800" },
+  { no: 7, name: "Alparslan Türkeş", id: "1-M55bBGvgcX5h5NSR0t875BDt7ixoCaj", url: "https://lh3.googleusercontent.com/d/1-M55bBGvgcX5h5NSR0t875BDt7ixoCaj=w800" },
+  { no: 8, name: "Angela Merkel", id: "19VocNpWK83Qq94TLaP7TJDIXu84Xp42-", url: "https://lh3.googleusercontent.com/d/19VocNpWK83Qq94TLaP7TJDIXu84Xp42-=w800" },
+  { no: 9, name: "Arda Güler Yeni", id: "1Ai_VerVnUpjbVvXLKdhAHI_Bmo78cyjx", url: "https://lh3.googleusercontent.com/d/1Ai_VerVnUpjbVvXLKdhAHI_Bmo78cyjx=w800" },
+  { no: 10, name: "Arda Turan", id: "1nzRqFPKEaDVQ-FcTT23xuPzHVkWbItP-", url: "https://lh3.googleusercontent.com/d/1nzRqFPKEaDVQ-FcTT23xuPzHVkWbItP-=w800" },
+  { no: 11, name: "Attila İlhan", id: "1GlNNpf9HtHEF_8GJ6NMyStoZjzQmrp6i", url: "https://lh3.googleusercontent.com/d/1GlNNpf9HtHEF_8GJ6NMyStoZjzQmrp6i=w800" },
+  { no: 12, name: "Ayhan Işık", id: "1cbZFpgBbCTqXDguMQn-IYIkpQM0td8cK", url: "https://lh3.googleusercontent.com/d/1cbZFpgBbCTqXDguMQn-IYIkpQM0td8cK=w800" },
+  { no: 13, name: "Aziz Sancar", id: "1BL0lXdvtvR7G7UGg1HfkaFEvyLVQi4tE", url: "https://lh3.googleusercontent.com/d/1BL0lXdvtvR7G7UGg1HfkaFEvyLVQi4tE=w800" },
+  { no: 14, name: "Barack Obama", id: "1HYP46yVaxg2d61PIn7dE4HN_Szcdsy4F", url: "https://lh3.googleusercontent.com/d/1HYP46yVaxg2d61PIn7dE4HN_Szcdsy4F=w800" },
+  { no: 15, name: "Barış Manço", id: "1SFG1T8udY2ngUMBn3iRwa1pzTqfF_ErD", url: "https://lh3.googleusercontent.com/d/1SFG1T8udY2ngUMBn3iRwa1pzTqfF_ErD=w800" },
+  { no: 16, name: "Bülent Ecevit", id: "10MeNKlbfY8v40HUkO57LHrwR_UHavdX-", url: "https://lh3.googleusercontent.com/d/10MeNKlbfY8v40HUkO57LHrwR_UHavdX-=w800" },
+  { no: 17, name: "Bülent Ersoy", id: "1rFKIOcYmDYVw0CmuxUT5m1tBDW-K-qB-", url: "https://lh3.googleusercontent.com/d/1rFKIOcYmDYVw0CmuxUT5m1tBDW-K-qB-=w800" },
+  { no: 17, name: "Bülent Ersoy (gençliği)", id: "1Dxo_EoygsuoA6dWPlfqgnsLWUKilU4UV", url: "https://lh3.googleusercontent.com/d/1Dxo_EoygsuoA6dWPlfqgnsLWUKilU4UV=w800" },
+  { no: 18, name: "Cem Karaca", id: "1rprYQe28ww_teee6WnDvVw-y81NIOFBa", url: "https://lh3.googleusercontent.com/d/1rprYQe28ww_teee6WnDvVw-y81NIOFBa=w800" },
+  { no: 19, name: "Cem Yılmaz", id: "1oP12yiXH1IRAuKL7twstzMh6Ykf68iFw", url: "https://lh3.googleusercontent.com/d/1oP12yiXH1IRAuKL7twstzMh6Ykf68iFw=w800" },
+  { no: 20, name: "Cristiano Ronaldo", id: "1YGcrFfDtnM5r2e4Qz9sKyAmfxQX8iEhD", url: "https://lh3.googleusercontent.com/d/1YGcrFfDtnM5r2e4Qz9sKyAmfxQX8iEhD=w800" },
+  { no: 21, name: "Cüneyt Arkın", id: "1QMhhzBEH-bV5S-qMlYyOAixPghb2EQRO", url: "https://lh3.googleusercontent.com/d/1QMhhzBEH-bV5S-qMlYyOAixPghb2EQRO=w800" },
+  { no: 22, name: "Deniz Baykal", id: "19ILCzkFxLlXKmKwNdslZa1I5cGYhFjy4", url: "https://lh3.googleusercontent.com/d/19ILCzkFxLlXKmKwNdslZa1I5cGYhFjy4=w800" },
+  { no: 23, name: "Devlet Bahçeli", id: "1u5PN7MWOjgWYXYZvM5RGYwOqkwypKoNN", url: "https://lh3.googleusercontent.com/d/1u5PN7MWOjgWYXYZvM5RGYwOqkwypKoNN=w800" },
+  { no: 24, name: "Donald Trump", id: "1Nm6LRPLFpuJA7UkcdJXYTlAPbmJD7fDo", url: "https://lh3.googleusercontent.com/d/1Nm6LRPLFpuJA7UkcdJXYTlAPbmJD7fDo=w800" },
+  { no: 25, name: "Ediz Hun (genç)", id: "17i5pvFXL9Niu0rBxfHDAJ3Ykpojyy1e8", url: "https://lh3.googleusercontent.com/d/17i5pvFXL9Niu0rBxfHDAJ3Ykpojyy1e8=w800" },
+  { no: 26, name: "Ekrem İmamoğlu", id: "1Nrq76sGaLcEYz1_-GsFz8kjBJU_SoS0j", url: "https://lh3.googleusercontent.com/d/1Nrq76sGaLcEYz1_-GsFz8kjBJU_SoS0j=w800" },
+  { no: 27, name: "Emel Sayın (gençliği)", id: "1AIK7sIM0IjVzvzdtGwECXCsYs_bVXros", url: "https://lh3.googleusercontent.com/d/1AIK7sIM0IjVzvzdtGwECXCsYs_bVXros=w800" },
+  { no: 27, name: "Emel Sayın (yaşlı)", id: "1E7uXgTYwoV6XsgdEILfS4aRH3aQ-GsCO", url: "https://lh3.googleusercontent.com/d/1E7uXgTYwoV6XsgdEILfS4aRH3aQ-GsCO=w800" },
+  { no: 28, name: "Erdal İnönü", id: "1iYRxBoeFrAuAEhuohZ7fs6V4O2YjpACd", url: "https://lh3.googleusercontent.com/d/1iYRxBoeFrAuAEhuohZ7fs6V4O2YjpACd=w800" },
+  { no: 29, name: "Fatih Terim", id: "11dhnZ3Ma9hHGP6Q7Yv-jPwzU8rXAu_Sn", url: "https://lh3.googleusercontent.com/d/11dhnZ3Ma9hHGP6Q7Yv-jPwzU8rXAu_Sn=w800" },
+  { no: 30, name: "Fatma Girik (genç)", id: "1r5LnM69wRT8BUs65eNKjzsAJx36U83Q5", url: "https://lh3.googleusercontent.com/d/1r5LnM69wRT8BUs65eNKjzsAJx36U83Q5=w800" },
+  { no: 31, name: "Ferdi Tayfur", id: "1WhFE6yaOFCCktXphNDCWPq9qlo8jBjkh", url: "https://lh3.googleusercontent.com/d/1WhFE6yaOFCCktXphNDCWPq9qlo8jBjkh=w800" },
+  { no: 32, name: "Fikret Hakan_edited", id: "1QKPebtoppYkQkTfmKvQhES2B9_KEdAgw", url: "https://lh3.googleusercontent.com/d/1QKPebtoppYkQkTfmKvQhES2B9_KEdAgw=w800" },
+  { no: 33, name: "Filiz Akın", id: "1LqwKu6dv799-op95KeMKieyIShPihnrm", url: "https://lh3.googleusercontent.com/d/1LqwKu6dv799-op95KeMKieyIShPihnrm=w800" },
+  { no: 34, name: "Gülşen Bubikoğlu", id: "17h9cAeQb8_4sG_r9c946uuoKl4KzEA8R", url: "https://lh3.googleusercontent.com/d/17h9cAeQb8_4sG_r9c946uuoKl4KzEA8R=w800" },
+  { no: 35, name: "Haluk Bilginer", id: "1ujjZyF6G7R3V_VNye1DqoxmWRPky0udO", url: "https://lh3.googleusercontent.com/d/1ujjZyF6G7R3V_VNye1DqoxmWRPky0udO=w800" },
+  { no: 36, name: "Hulusi Kentmen", id: "1POrB0_0kQ5q3lfoUXKIQNf41Xli3csBp", url: "https://lh3.googleusercontent.com/d/1POrB0_0kQ5q3lfoUXKIQNf41Xli3csBp=w800" },
+  { no: 37, name: "Hülya Avşar", id: "1RLZ8fHyveqsBubp1dMLzmE-C8DyA7L-c", url: "https://lh3.googleusercontent.com/d/1RLZ8fHyveqsBubp1dMLzmE-C8DyA7L-c=w800" },
+  { no: 38, name: "Hülya Koçyiğit (gençliği)", id: "1b3WmFh6J8GBTkLjDB01n3Nqw1CwSA-QP", url: "https://lh3.googleusercontent.com/d/1b3WmFh6J8GBTkLjDB01n3Nqw1CwSA-QP=w800" },
+  { no: 39, name: "İbrahim Tatlıses", id: "17_ldT7kNSsGxDEfK_Dp1ikkpE69efds1", url: "https://lh3.googleusercontent.com/d/17_ldT7kNSsGxDEfK_Dp1ikkpE69efds1=w800" },
+  { no: 40, name: "İlber Ortaylı", id: "1JHp3W-ZFGf7pZ7KycuBzTMsmSyZo8AIa", url: "https://lh3.googleusercontent.com/d/1JHp3W-ZFGf7pZ7KycuBzTMsmSyZo8AIa=w800" },
+  { no: 41, name: "İsmet İnönü", id: "1vFqGSAu9vonrx7O2SQ3nbrDIe4cRzn1T", url: "https://lh3.googleusercontent.com/d/1vFqGSAu9vonrx7O2SQ3nbrDIe4cRzn1T=w800" },
+  { no: 42, name: "J. F. Kennedy", id: "1FibakfgXYmEBfUIV_0Z0qNcB5XoFSczJ", url: "https://lh3.googleusercontent.com/d/1FibakfgXYmEBfUIV_0Z0qNcB5XoFSczJ=w800" },
+  { no: 43, name: "Kadir İnanır", id: "1ABq_Bo8ir4effAtxtsc_K9NkEwXweId1", url: "https://lh3.googleusercontent.com/d/1ABq_Bo8ir4effAtxtsc_K9NkEwXweId1=w800" },
+  { no: 44, name: "Kartal Tibet", id: "1rn2c9SxK7h2PS3zOPR-CWOLW7siSUepH", url: "https://lh3.googleusercontent.com/d/1rn2c9SxK7h2PS3zOPR-CWOLW7siSUepH=w800" },
+  { no: 45, name: "Kemal Kılıçdaroğlu", id: "12HB_g_3c5XCp3uW7XyuhXlrVIUXChAp_", url: "https://lh3.googleusercontent.com/d/12HB_g_3c5XCp3uW7XyuhXlrVIUXChAp_=w800" },
+  { no: 46, name: "Kemal Sunal", id: "10u47MXVj5qp5sS8QOso2woFWe6SlVyH6", url: "https://lh3.googleusercontent.com/d/10u47MXVj5qp5sS8QOso2woFWe6SlVyH6=w800" },
+  { no: 47, name: "Kenan Evren", id: "1E4OZFUT0Xa_rt4ZCF361niut8TL75g2H", url: "https://lh3.googleusercontent.com/d/1E4OZFUT0Xa_rt4ZCF361niut8TL75g2H=w800" },
+  { no: 48, name: "Kenan İmirzalıoğlu", id: "1AO4n7jlgJ4KImKuCusYAPxL63VHKbqmv", url: "https://lh3.googleusercontent.com/d/1AO4n7jlgJ4KImKuCusYAPxL63VHKbqmv=w800" },
+  { no: 49, name: "Maradona", id: "1ukpqsV95qJwY0D4JvNnXS1Sixqcw15Hv", url: "https://lh3.googleusercontent.com/d/1ukpqsV95qJwY0D4JvNnXS1Sixqcw15Hv=w800" },
+  { no: 50, name: "Margaret Thatcher", id: "1ScqfvgrNpRg0-JDWwzo6jd0pn8PJeTLt", url: "https://lh3.googleusercontent.com/d/1ScqfvgrNpRg0-JDWwzo6jd0pn8PJeTLt=w800" },
+  { no: 51, name: "Marie Curie", id: "1GYbEQUMu0H6XeZ4SitYOJlPWnYAkTGOt", url: "https://lh3.googleusercontent.com/d/1GYbEQUMu0H6XeZ4SitYOJlPWnYAkTGOt=w800" },
+  { no: 52, name: "Mehmet Akif Ersoy", id: "1sJMDRDcuxJfYCukl6Kxpvr1G-eQuuISL", url: "https://lh3.googleusercontent.com/d/1sJMDRDcuxJfYCukl6Kxpvr1G-eQuuISL=w800" },
+  { no: 53, name: "Mesut Yılmaz", id: "1EnXCQ4EHfesAF-gN0CIwTc_UztAru7p7", url: "https://lh3.googleusercontent.com/d/1EnXCQ4EHfesAF-gN0CIwTc_UztAru7p7=w800" },
+  { no: 54, name: "Metin Akpınar", id: "1d4ZwU2hcvSAkVei8hQgSXyZin1lx-AGr", url: "https://lh3.googleusercontent.com/d/1d4ZwU2hcvSAkVei8hQgSXyZin1lx-AGr=w800" },
+  { no: 55, name: "Metin Oktay", id: "1qbM2-vAHScWq_ooHYAQ4Hvn51p5shiOo", url: "https://lh3.googleusercontent.com/d/1qbM2-vAHScWq_ooHYAQ4Hvn51p5shiOo=w800" },
+  { no: 56, name: "Metin Tekin", id: "1gO_bORe_Wl3GsXxC_cONyh0O0JFdI2G0", url: "https://lh3.googleusercontent.com/d/1gO_bORe_Wl3GsXxC_cONyh0O0JFdI2G0=w800" },
+  { no: 57, name: "Muazzez Abacı (yaşlılığı)", id: "16kK7aOhRFPrQcZgmlpgThFKX_1OUTrnR", url: "https://lh3.googleusercontent.com/d/16kK7aOhRFPrQcZgmlpgThFKX_1OUTrnR=w800" },
+  { no: 58, name: "Muazzez Ersoy", id: "1MfcXvJS2iSLyv08hdnfZ02MKALX0gWtI", url: "https://lh3.googleusercontent.com/d/1MfcXvJS2iSLyv08hdnfZ02MKALX0gWtI=w800" },
+  { no: 59, name: "Muhammed Ali", id: "1rj0cAkiwJTmUXbhSgARotKG-fUf_4ATA", url: "https://lh3.googleusercontent.com/d/1rj0cAkiwJTmUXbhSgARotKG-fUf_4ATA=w800" },
+  { no: 60, name: "Muhsin Yazıcıoğlu", id: "1RBGasRgj6yRYH3dKofLxMQKYcUpZtGww", url: "https://lh3.googleusercontent.com/d/1RBGasRgj6yRYH3dKofLxMQKYcUpZtGww=w800" },
+  { no: 61, name: "Müslüm Gürses", id: "1R7l40kGKRx6giiQEMTrYTZkj8TR4-syw", url: "https://lh3.googleusercontent.com/d/1R7l40kGKRx6giiQEMTrYTZkj8TR4-syw=w800" },
+  { no: 62, name: "Naim Süleymanoğlu", id: "1gMVln85FtNC4Ncl_YTkpJm1U8gyuINJS", url: "https://lh3.googleusercontent.com/d/1gMVln85FtNC4Ncl_YTkpJm1U8gyuINJS=w800" },
+  { no: 63, name: "Nazım Hikmet", id: "1520RQbViTKCVLUDSGj63SYbgc0rpRpGd", url: "https://lh3.googleusercontent.com/d/1520RQbViTKCVLUDSGj63SYbgc0rpRpGd=w800" },
+  { no: 64, name: "Necip Fazıl Kısakürek", id: "1WTRcvpFk-yDANvG8Nyo_Q_NEkbmqEV3g", url: "https://lh3.googleusercontent.com/d/1WTRcvpFk-yDANvG8Nyo_Q_NEkbmqEV3g=w800" },
+  { no: 65, name: "Necmettin Erbakan", id: "1XDCtiQ-f811awRV8xsnbCT8Q_1sHdjTz", url: "https://lh3.googleusercontent.com/d/1XDCtiQ-f811awRV8xsnbCT8Q_1sHdjTz=w800" },
+  { no: 66, name: "Neşe Karaböcek", id: "1kTjXooO4sIAis-e92LnmUuZwtw7PpmHc", url: "https://lh3.googleusercontent.com/d/1kTjXooO4sIAis-e92LnmUuZwtw7PpmHc=w800" },
+  { no: 67, name: "Neşet Ertaş", id: "1koKN12BNQdnNzbcoqS3N9kEm523R59BQ", url: "https://lh3.googleusercontent.com/d/1koKN12BNQdnNzbcoqS3N9kEm523R59BQ=w800" },
+  { no: 68, name: "Orhan Gencebay", id: "17kzD1Q63JgxnscB0SzAzHIMQs-zB5Qbq", url: "https://lh3.googleusercontent.com/d/17kzD1Q63JgxnscB0SzAzHIMQs-zB5Qbq=w800" },
+  { no: 69, name: "Orhan Pamuk", id: "1w0KxJ4VVJm5P_KzGusk50yo2hiFKsZLy", url: "https://lh3.googleusercontent.com/d/1w0KxJ4VVJm5P_KzGusk50yo2hiFKsZLy=w800" },
+  { no: 70, name: "Orhan Veli Kanık", id: "1nqxpf9bxjZxOqL6G_8u04ffPFofyYaEs", url: "https://lh3.googleusercontent.com/d/1nqxpf9bxjZxOqL6G_8u04ffPFofyYaEs=w800" },
+  { no: 71, name: "Özgür Özel", id: "16u0XKQ0vnIOZuWIsSpjESDcmlpo7Jydz", url: "https://lh3.googleusercontent.com/d/16u0XKQ0vnIOZuWIsSpjESDcmlpo7Jydz=w800" },
+  { no: 72, name: "Pele", id: "1865Yyt0HVRQDCYQDiURholyCExoQw4z-", url: "https://lh3.googleusercontent.com/d/1865Yyt0HVRQDCYQDiURholyCExoQw4z-=w800" },
+  { no: 73, name: "Perihan Savaş", id: "1pqeaKHdZkMD_yOCAzcEAFnPFX0oXjmJO", url: "https://lh3.googleusercontent.com/d/1pqeaKHdZkMD_yOCAzcEAFnPFX0oXjmJO=w800" },
+  { no: 74, name: "Putin", id: "1ayR_yfhiaXbgVrMh-9RQ7ziKtNSxA3zm", url: "https://lh3.googleusercontent.com/d/1ayR_yfhiaXbgVrMh-9RQ7ziKtNSxA3zm=w800" },
+  { no: 75, name: "Rıdvan Dilmen", id: "180dFwvbQACJNtdPbulN6eT-bHfa2dG7_", url: "https://lh3.googleusercontent.com/d/180dFwvbQACJNtdPbulN6eT-bHfa2dG7_=w800" },
+  { no: 76, name: "Robert De Niro", id: "1PJrxr5Zoh0nB75UGiosuqaPrGXqiNW6Q", url: "https://lh3.googleusercontent.com/d/1PJrxr5Zoh0nB75UGiosuqaPrGXqiNW6Q=w800" },
+  { no: 77, name: "Saddam Hüseyin", id: "1Qoc1PC_CiSUprGJGyUXyX6Okgy82uaZK", url: "https://lh3.googleusercontent.com/d/1Qoc1PC_CiSUprGJGyUXyX6Okgy82uaZK=w800" },
+  { no: 78, name: "Sergen Yalçın", id: "1AohCzZ5O31EDGudSeZalP7qpBkwqzScA", url: "https://lh3.googleusercontent.com/d/1AohCzZ5O31EDGudSeZalP7qpBkwqzScA=w800" },
+  { no: 79, name: "Sezen Aksu", id: "1YKK6v39Ovmit5--SSzOMVPrVgY1x0MAz", url: "https://lh3.googleusercontent.com/d/1YKK6v39Ovmit5--SSzOMVPrVgY1x0MAz=w800" },
+  { no: 80, name: "Sibel Can", id: "12djZiQnPn_R8Lo-TJP11MiCIUOo_8Npg", url: "https://lh3.googleusercontent.com/d/12djZiQnPn_R8Lo-TJP11MiCIUOo_8Npg=w800" },
+  { no: 81, name: "Süleyman Demirel", id: "1YyddEmnaeokQWQzh6HVGVHjWhHsbpbcv", url: "https://lh3.googleusercontent.com/d/1YyddEmnaeokQWQzh6HVGVHjWhHsbpbcv=w800" },
+  { no: 82, name: "Şener Şen", id: "18vG0oCTBL_zdEFW_0Oyd5mn0hQNadwQU", url: "https://lh3.googleusercontent.com/d/18vG0oCTBL_zdEFW_0Oyd5mn0hQNadwQU=w800" },
+  { no: 83, name: "Tanju Çolak (genç)", id: "1KJh-qi57V511-hnFIMA5Ph8ZpZRz5l6b", url: "https://lh3.googleusercontent.com/d/1KJh-qi57V511-hnFIMA5Ph8ZpZRz5l6b=w800" },
+  { no: 84, name: "Tanju Çolak (yaşlı)", id: "1zD5VsU7Z6GQXw_RnNcQiD6joPisnp4Hl", url: "https://lh3.googleusercontent.com/d/1zD5VsU7Z6GQXw_RnNcQiD6joPisnp4Hl=w800" },
+  { no: 85, name: "Tansu Çiller", id: "1Jvljw9tRRhitCLy-oK3ZVwEk5nUjbMAO", url: "https://lh3.googleusercontent.com/d/1Jvljw9tRRhitCLy-oK3ZVwEk5nUjbMAO=w800" },
+  { no: 86, name: "Tarık Akan", id: "1tUu1s5RTf1dY3EWm3jXyGd2ULnpiTSGQ", url: "https://lh3.googleusercontent.com/d/1tUu1s5RTf1dY3EWm3jXyGd2ULnpiTSGQ=w800" },
+  { no: 87, name: "Tarkan", id: "1G4Nkd03V9MG5oKf6pHB5k0ThJkyX6yVl", url: "https://lh3.googleusercontent.com/d/1G4Nkd03V9MG5oKf6pHB5k0ThJkyX6yVl=w800" },
+  { no: 88, name: "Turgut Özal", id: "1WvwLT1nQWuouGtj8heXO5Iqa5DkTkcFy", url: "https://lh3.googleusercontent.com/d/1WvwLT1nQWuouGtj8heXO5Iqa5DkTkcFy=w800" },
+  { no: 89, name: "Türkan Şoray", id: "11H574RT7UNTPOXEdPn2uW2reSkUAfet9", url: "https://lh3.googleusercontent.com/d/11H574RT7UNTPOXEdPn2uW2reSkUAfet9=w800" },
+  { no: 90, name: "Winston Churhcill", id: "1_w62P8g8pQM840GwOdYZ0cYXxVQPOvu1", url: "https://lh3.googleusercontent.com/d/1_w62P8g8pQM840GwOdYZ0cYXxVQPOvu1=w800" },
+  { no: 91, name: "Yaşar Kemal", id: "1w1n2h8BXXw1k3YCIIgT-SgdqH825BCYT", url: "https://lh3.googleusercontent.com/d/1w1n2h8BXXw1k3YCIIgT-SgdqH825BCYT=w800" },
+  { no: 92, name: "Zeki Alasya", id: "1c5NMIOFISs0JDj_lCJfA5-qm2riKACTz", url: "https://lh3.googleusercontent.com/d/1c5NMIOFISs0JDj_lCJfA5-qm2riKACTz=w800" },
+  { no: 93, name: "Zülfü Livaneli", id: "1GBbFCjGuWakhi-bDSWlV_ksibtEXiD4-", url: "https://lh3.googleusercontent.com/d/1GBbFCjGuWakhi-bDSWlV_ksibtEXiD4-=w800" },
+  { no: 94, name: "Mustafa Kemal Atatürk", id: "1I32a4_WTH3HrZ-gUt0zsDtux5_vJRYT0", url: "https://lh3.googleusercontent.com/d/1I32a4_WTH3HrZ-gUt0zsDtux5_vJRYT0=w800" },
+  { no: 95, name: "Recep Tayyip Erdoğan", id: "1JHIkxMmwdsTBxF7RJwDJyEyO1wloOGjl", url: "https://lh3.googleusercontent.com/d/1JHIkxMmwdsTBxF7RJwDJyEyO1wloOGjl=w800" },
+  { no: 96, name: "Zeki Müren", id: "172NBwjUZk18eELx5zskV_V8doBcOuQ-3", url: "https://lh3.googleusercontent.com/d/172NBwjUZk18eELx5zskV_V8doBcOuQ-3=w800" },
 ];
 
-// ── STATE ───────────────────────────────────────────────
-let demographics = {};
-let shuffledPhotos = [];
-let currentIndex = 0;
-let responses = [];
-let currentRecognition = null;
+const OBJECTS = [
+  { no: 1, name: "Abaküs", id: "1XdlT9jF03FSnMCMFmm6ytMYndR6e4RmV", url: "https://lh3.googleusercontent.com/d/1XdlT9jF03FSnMCMFmm6ytMYndR6e4RmV=w800" },
+  { no: 2, name: "Ağaç", id: "1uRmOr9bwfkckQ3esyrjlMULOVofwSGSf", url: "https://lh3.googleusercontent.com/d/1uRmOr9bwfkckQ3esyrjlMULOVofwSGSf=w800" },
+  { no: 3, name: "Akrep", id: "1dt0MQyxY1MoSThhvV8WtwSzpO1Zposk0", url: "https://lh3.googleusercontent.com/d/1dt0MQyxY1MoSThhvV8WtwSzpO1Zposk0=w800" },
+  { no: 4, name: "Anahtar", id: "1Vr60Cv6uYGGeeKTfDmW5LdPFJdpEZkhW", url: "https://lh3.googleusercontent.com/d/1Vr60Cv6uYGGeeKTfDmW5LdPFJdpEZkhW=w800" },
+  { no: 5, name: "Baston", id: "1az8Hewulz8ZZ6Ia2Pge5OioSYi8as1R8", url: "https://lh3.googleusercontent.com/d/1az8Hewulz8ZZ6Ia2Pge5OioSYi8as1R8=w800" },
+  { no: 6, name: "Baykuş", id: "1p3QA5ysFLz_1DDrf-TxKreCLNBR4OzSJ", url: "https://lh3.googleusercontent.com/d/1p3QA5ysFLz_1DDrf-TxKreCLNBR4OzSJ=w800" },
+  { no: 7, name: "Bisiklet", id: "1kfQU5EO0NguXxhJ3UEuQN-8BVXQ6d3Kd", url: "https://lh3.googleusercontent.com/d/1kfQU5EO0NguXxhJ3UEuQN-8BVXQ6d3Kd=w800" },
+  { no: 8, name: "Bulut", id: "13FUcQMbP-yrRiryQ1ZgGOljIRIZ_9_oF", url: "https://lh3.googleusercontent.com/d/13FUcQMbP-yrRiryQ1ZgGOljIRIZ_9_oF=w800" },
+  { no: 9, name: "Cezve", id: "1s0rK4FcyuJ_pdcMa1zlTLkLAVhjTf-5X", url: "https://lh3.googleusercontent.com/d/1s0rK4FcyuJ_pdcMa1zlTLkLAVhjTf-5X=w800" },
+  { no: 10, name: "Çatal", id: "1hZj3eFYgiCVYqP6zajDgUhpfBwUVWW73", url: "https://lh3.googleusercontent.com/d/1hZj3eFYgiCVYqP6zajDgUhpfBwUVWW73=w800" },
+  { no: 11, name: "Çorap", id: "1i30Tj9Nytf6EYMzFk6Hvf-O_9njQTqGm", url: "https://lh3.googleusercontent.com/d/1i30Tj9Nytf6EYMzFk6Hvf-O_9njQTqGm=w800" },
+  { no: 12, name: "Daktilo", id: "1Z2ttsK3k0GyVmiZRNiUIwqnHCzDgSihl", url: "https://lh3.googleusercontent.com/d/1Z2ttsK3k0GyVmiZRNiUIwqnHCzDgSihl=w800" },
+  { no: 13, name: "Düğme", id: "1d7nO19WfOTMzPlYHeVbNPfJvFlM2DqiA", url: "https://lh3.googleusercontent.com/d/1d7nO19WfOTMzPlYHeVbNPfJvFlM2DqiA=w800" },
+  { no: 14, name: "Dümen", id: "1LyzTt5PzUx76fPORmCgPq5u9owbgiwcK", url: "https://lh3.googleusercontent.com/d/1LyzTt5PzUx76fPORmCgPq5u9owbgiwcK=w800" },
+  { no: 15, name: "Eldiven", id: "1YFe-zFTgRCCcYpwjCIZ_mK9N9BV_P_55", url: "https://lh3.googleusercontent.com/d/1YFe-zFTgRCCcYpwjCIZ_mK9N9BV_P_55=w800" },
+  { no: 16, name: "Elma", id: "1vO74EErDBWXzxUYdkASOL_MP6h8sBwgR", url: "https://lh3.googleusercontent.com/d/1vO74EErDBWXzxUYdkASOL_MP6h8sBwgR=w800" },
+  { no: 17, name: "Emzik", id: "18FoP2pV2rGcw82ldeSrx4THCk3xsAgJI", url: "https://lh3.googleusercontent.com/d/18FoP2pV2rGcw82ldeSrx4THCk3xsAgJI=w800" },
+  { no: 18, name: "İnek", id: "1ZNmZVNRbW1y8Z0kPdK5ZDNNBJqelZAVz", url: "https://lh3.googleusercontent.com/d/1ZNmZVNRbW1y8Z0kPdK5ZDNNBJqelZAVz=w800" },
+  { no: 19, name: "Kanguru", id: "17LQv-BDPNW7mA2o0YW-vHR7gsZruqjR9", url: "https://lh3.googleusercontent.com/d/17LQv-BDPNW7mA2o0YW-vHR7gsZruqjR9=w800" },
+  { no: 20, name: "Kapı", id: "1darcDFVeE5m9IsyXgHCGnmLeRB5hS_MS", url: "https://lh3.googleusercontent.com/d/1darcDFVeE5m9IsyXgHCGnmLeRB5hS_MS=w800" },
+  { no: 21, name: "Kedi", id: "1uvLYIHkGXUJ8ERHh4vfAwJsOoNiHmq0i", url: "https://lh3.googleusercontent.com/d/1uvLYIHkGXUJ8ERHh4vfAwJsOoNiHmq0i=w800" },
+  { no: 22, name: "Kelepçe", id: "1U3owK71cCloh2MQBj2ORMULGA1O0L8aX", url: "https://lh3.googleusercontent.com/d/1U3owK71cCloh2MQBj2ORMULGA1O0L8aX=w800" },
+  { no: 23, name: "Keman", id: "101Q-J6mT1c_s-anGR6cAua8Sw6_Bdqot", url: "https://lh3.googleusercontent.com/d/101Q-J6mT1c_s-anGR6cAua8Sw6_Bdqot=w800" },
+  { no: 24, name: "Kemer", id: "1ryiGPMM8cWS3LGwVaObu0OJBQdz8cmgn", url: "https://lh3.googleusercontent.com/d/1ryiGPMM8cWS3LGwVaObu0OJBQdz8cmgn=w800" },
+  { no: 25, name: "Kemik", id: "11Yto0UFLUtG8IgUGBse5-syP5TjlqoAj", url: "https://lh3.googleusercontent.com/d/11Yto0UFLUtG8IgUGBse5-syP5TjlqoAj=w800" },
+  { no: 26, name: "Kepçe", id: "1iGS4xU0Fa3c8gbrChN53W4M1mpzKOh7X", url: "https://lh3.googleusercontent.com/d/1iGS4xU0Fa3c8gbrChN53W4M1mpzKOh7X=w800" },
+  { no: 27, name: "Kiraz", id: "1GYAemOp9NYTSD4ruSEo_YA0eQb9tN21Q", url: "https://lh3.googleusercontent.com/d/1GYAemOp9NYTSD4ruSEo_YA0eQb9tN21Q=w800" },
+  { no: 28, name: "Kivi", id: "1p0-6iiq-GYU4B646fZYw22Z0jzbk-rLl", url: "https://lh3.googleusercontent.com/d/1p0-6iiq-GYU4B646fZYw22Z0jzbk-rLl=w800" },
+  { no: 29, name: "Kurbağa", id: "1d0VRVAEzq2lIk0zbMstZXD_rsIkX7eHG", url: "https://lh3.googleusercontent.com/d/1d0VRVAEzq2lIk0zbMstZXD_rsIkX7eHG=w800" },
+  { no: 30, name: "Kürek", id: "1nxQ1Oafk7k8AvWbK90SBB6_1xuNM9-ED", url: "https://lh3.googleusercontent.com/d/1nxQ1Oafk7k8AvWbK90SBB6_1xuNM9-ED=w800" },
+  { no: 31, name: "Makas", id: "15tgUEITiWulc0QRA-logKmOgvg8FxUwb", url: "https://lh3.googleusercontent.com/d/15tgUEITiWulc0QRA-logKmOgvg8FxUwb=w800" },
+  { no: 32, name: "Mikrofon", id: "1H-lDdWcmrAz639M4xSwyvO4tpTRwfThh", url: "https://lh3.googleusercontent.com/d/1H-lDdWcmrAz639M4xSwyvO4tpTRwfThh=w800" },
+  { no: 33, name: "Orak", id: "1n82Sd-E7ome2malOga7Qrqb6foTL1CDH", url: "https://lh3.googleusercontent.com/d/1n82Sd-E7ome2malOga7Qrqb6foTL1CDH=w800" },
+  { no: 34, name: "Papyon", id: "10Ft3Li_K9tZaQHXIrElImajQwnDN_vvS", url: "https://lh3.googleusercontent.com/d/10Ft3Li_K9tZaQHXIrElImajQwnDN_vvS=w800" },
+  { no: 35, name: "Patlıcan", id: "1hVLkLJa44PHkB332GHqmtOnZ-JKnobWg", url: "https://lh3.googleusercontent.com/d/1hVLkLJa44PHkB332GHqmtOnZ-JKnobWg=w800" },
+  { no: 36, name: "Pergel", id: "1ww8COxJDhDoOIFzQ2j7Pai3mMa2TKtxV", url: "https://lh3.googleusercontent.com/d/1ww8COxJDhDoOIFzQ2j7Pai3mMa2TKtxV=w800" },
+  { no: 37, name: "Piyano", id: "1FvXHtd7FuMhL8RMCLF5hKdr0LFSEYxNd", url: "https://lh3.googleusercontent.com/d/1FvXHtd7FuMhL8RMCLF5hKdr0LFSEYxNd=w800" },
+  { no: 38, name: "Pusula", id: "1LmgTpVIYGVWm841DluJ-6fCjveMRCjds", url: "https://lh3.googleusercontent.com/d/1LmgTpVIYGVWm841DluJ-6fCjveMRCjds=w800" },
+  { no: 39, name: "Raket", id: "1MrIBFtJgaJ_6klgBg39dQ4i98g-mWxox", url: "https://lh3.googleusercontent.com/d/1MrIBFtJgaJ_6klgBg39dQ4i98g-mWxox=w800" },
+  { no: 40, name: "Rende", id: "1qNFWKO7TywCEGKagnvbGwYHUM127yu_7", url: "https://lh3.googleusercontent.com/d/1qNFWKO7TywCEGKagnvbGwYHUM127yu_7=w800" },
+  { no: 41, name: "Saat", id: "1Q4QY-wh9bjv8Qzr05xmsTRBHhSpNmVbF", url: "https://lh3.googleusercontent.com/d/1Q4QY-wh9bjv8Qzr05xmsTRBHhSpNmVbF=w800" },
+  { no: 42, name: "Sandalye", id: "1siJZHITC2LB_gt1RReonBBrmOgj0B1we", url: "https://lh3.googleusercontent.com/d/1siJZHITC2LB_gt1RReonBBrmOgj0B1we=w800" },
+  { no: 43, name: "Sapan", id: "1WcXKIhr1Q-niQhbsg-ltlVZ-2kP3iBln", url: "https://lh3.googleusercontent.com/d/1WcXKIhr1Q-niQhbsg-ltlVZ-2kP3iBln=w800" },
+  { no: 44, name: "Sigara", id: "1qnlKAcF7IrOFx1AHpuulIXdNNnOYtunE", url: "https://lh3.googleusercontent.com/d/1qnlKAcF7IrOFx1AHpuulIXdNNnOYtunE=w800" },
+  { no: 45, name: "Simit", id: "1nDW8S2NMZ9m4c47VIhs4raSwI5DfUzd4", url: "https://lh3.googleusercontent.com/d/1nDW8S2NMZ9m4c47VIhs4raSwI5DfUzd4=w800" },
+  { no: 46, name: "Şemsiye", id: "1ufDznE3MuYWWuUx2v0gnFRb_OtvY0m5J", url: "https://lh3.googleusercontent.com/d/1ufDznE3MuYWWuUx2v0gnFRb_OtvY0m5J=w800" },
+  { no: 47, name: "Tarak", id: "1xYyYz6x8R3w0qVYrnzNG0lC2WN12brJu", url: "https://lh3.googleusercontent.com/d/1xYyYz6x8R3w0qVYrnzNG0lC2WN12brJu=w800" },
+  { no: 48, name: "Tavşan", id: "1OakSwdIppCq1QfUM9zrBdA8NKfZj3vCS", url: "https://lh3.googleusercontent.com/d/1OakSwdIppCq1QfUM9zrBdA8NKfZj3vCS=w800" },
+  { no: 49, name: "Tornavida", id: "1Y6zonLvzua5wB6d3AypkbHfUZN37G9WN", url: "https://lh3.googleusercontent.com/d/1Y6zonLvzua5wB6d3AypkbHfUZN37G9WN=w800" },
+  { no: 50, name: "Yaprak", id: "1EIg1rEm-p4vPkAW72s1G-jpS0rYchr1b", url: "https://lh3.googleusercontent.com/d/1EIg1rEm-p4vPkAW72s1G-jpS0rYchr1b=w800" },
+];
 
-// ── PAGE NAV ────────────────────────────────────────────
+// -- STATE ----------------------------------------------------
+let testOrder = [];      // ['bukim','bune'] or ['bune','bukim']
+let testPos = 0;
+
+let demographics = {};
+let participantId = '';
+
+let shuffledPhotos = [];
+let biIndex = 0;
+let biResponses = [];    // {no, name, recognition, given_desc, rt}
+
+let shuffledObjects = [];
+let neIndex = 0;
+let neResponses = [];    // {no, name, recognition, given_desc, rt}
+
+let pendingChoice = null;
+let itemShownAt = 0;
+let timerHandle = null;
+
+function genId() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+}
+
+// -- PAGE NAV ---------------------------------------------------
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-// ── RADIO HIGHLIGHT ─────────────────────────────────────
+// -- RADIO HIGHLIGHT ----------------------------------------------
 document.addEventListener('change', function(e) {
   if (e.target.type === 'radio') {
     const group = e.target.closest('.radio-group');
@@ -807,7 +596,6 @@ document.addEventListener('change', function(e) {
       group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
       e.target.closest('.radio-option').classList.add('selected');
     }
-    // "Diğer" toggle for türkiye question
     if (e.target.name === 'turkiye') {
       const digerInput = document.getElementById('turkiye_diger_input');
       digerInput.className = 'other-input' + (e.target.value === 'Diğer' ? ' visible' : '');
@@ -815,10 +603,168 @@ document.addEventListener('change', function(e) {
   }
 });
 
-// ── DEMOGRAPHICS VALIDATION ─────────────────────────────
+// -- TEST SELECTION ------------------------------------------------
+function selectTestOrder(first) {
+  const other = first === 'bukim' ? 'bune' : 'bukim';
+  testOrder = [first, other];
+  testPos = 0;
+  participantId = genId();
+  goToTestIntro();
+}
+
+function goToTestIntro() {
+  const t = testOrder[testPos];
+  showPage(t === 'bukim' ? 'page-intro-bukim' : 'page-intro-bune');
+}
+
+function startTestItems() {
+  const t = testOrder[testPos];
+  if (t === 'bukim' && shuffledPhotos.length === 0) {
+    shuffledPhotos = [...PHOTOS];
+    for (let i = shuffledPhotos.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledPhotos[i], shuffledPhotos[j]] = [shuffledPhotos[j], shuffledPhotos[i]];
+    }
+  }
+  if (t === 'bune' && shuffledObjects.length === 0) {
+    shuffledObjects = [...OBJECTS];
+    for (let i = shuffledObjects.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledObjects[i], shuffledObjects[j]] = [shuffledObjects[j], shuffledObjects[i]];
+    }
+  }
+  showPage('page-items');
+  loadItem();
+}
+
+// -- ITEM LOGIC -----------------------------------------------------
+function loadItem() {
+  const t = testOrder[testPos];
+  const arr = t === 'bukim' ? shuffledPhotos : shuffledObjects;
+  const idx = t === 'bukim' ? biIndex : neIndex;
+  const total = arr.length;
+
+  if (idx >= total) { finishCurrentTest(); return; }
+
+  const item = arr[idx];
+  const pct = Math.round((idx / total) * 100);
+  document.getElementById('prog_label').textContent = `${idx + 1} / ${total}`;
+  document.getElementById('prog_pct').textContent = `${pct}%`;
+  document.getElementById('prog_fill').style.width = pct + '%';
+
+  document.getElementById('item_question').textContent = t === 'bukim' ? 'Bu kim?' : 'Bu ne?';
+  document.getElementById('desc_label').textContent = t === 'bukim' ? 'Bu kişi hakkında ne biliyorsunuz?' : 'Bu şeyi tarif eder misiniz?';
+  document.getElementById('desc_input').placeholder = t === 'bukim' ? 'neyle ünlü? ne iş yapıyor?' : 'ne işe yarar? nerede kullanılır?';
+
+  const img = document.getElementById('item_img');
+  const loading = document.getElementById('img_loading');
+  img.style.display = 'none';
+  loading.style.display = 'block';
+  loading.textContent = 'Yükleniyor…';
+  img.src = item.url;
+
+  document.getElementById('item_number').textContent = item.no;
+  document.getElementById('item_timer').textContent = '0';
+  document.getElementById('item_timer').classList.remove('danger');
+
+  document.getElementById('btn_know').className = 'rec-btn';
+  document.getElementById('btn_unsure').className = 'rec-btn';
+  document.getElementById('btn_no').className = 'rec-btn';
+  document.getElementById('desc_wrap').className = 'desc-input-wrap';
+  document.getElementById('desc_input').value = '';
+  document.getElementById('item_nav').style.display = 'none';
+  document.getElementById('btn_next_item').disabled = true;
+
+  prefetchNext();
+}
+
+function onImageVisible() {
+  itemShownAt = performance.now();
+  if (timerHandle) clearInterval(timerHandle);
+  const t = testOrder[testPos];
+  const threshold = t === 'bukim' ? 20 : 10;
+  const timerEl = document.getElementById('item_timer');
+  let lastSecond = -1;
+  timerHandle = setInterval(() => {
+    const elapsed = Math.floor((performance.now() - itemShownAt) / 1000);
+    if (elapsed === lastSecond) return;
+    lastSecond = elapsed;
+    timerEl.textContent = elapsed;
+    timerEl.classList.toggle('danger', elapsed >= threshold);
+    if (elapsed === threshold) {
+      timerEl.classList.remove('pulse');
+      void timerEl.offsetWidth; // reflow, restart animasyonu garantiler
+      timerEl.classList.add('pulse');
+    }
+  }, 100);
+}
+
+function prefetchNext() {
+  const t = testOrder[testPos];
+  const arr = t === 'bukim' ? shuffledPhotos : shuffledObjects;
+  const idx = t === 'bukim' ? biIndex : neIndex;
+  for (let i = 1; i <= 3; i++) {
+    const n = arr[idx + i];
+    if (n) { const im = new Image(); im.src = n.url; }
+  }
+}
+
+function selectAnswer(choice) {
+  if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
+  const elapsedSec = Math.round(((performance.now() - itemShownAt) / 1000) * 100) / 100;
+
+  document.getElementById('btn_know').className    = 'rec-btn' + (choice === 'know'   ? ' selected-yes'    : '');
+  document.getElementById('btn_no').className       = 'rec-btn' + (choice === 'no'     ? ' selected-no'     : '');
+  document.getElementById('btn_unsure').className   = 'rec-btn' + (choice === 'unsure' ? ' selected-unsure' : '');
+
+  if (choice === 'know' || choice === 'no') {
+    const recognition = choice === 'know' ? 'Adını söyledi' : 'Tanımadı';
+    const rt = choice === 'know' ? elapsedSec : '';
+    document.getElementById('desc_wrap').className = 'desc-input-wrap';
+    document.getElementById('item_nav').style.display = 'none';
+    setTimeout(() => finalizeItem(recognition, '', rt), 400);
+  } else {
+    // unsure - tarif kutucuğu aç, sonraki nesneye "Kaydet ve Devam Et" ile geç
+    document.getElementById('desc_wrap').className = 'desc-input-wrap visible';
+    document.getElementById('item_nav').style.display = 'flex';
+    document.getElementById('btn_next_item').disabled = false;
+    document.getElementById('desc_input').focus();
+  }
+}
+
+function confirmUnsure() {
+  const descVal = document.getElementById('desc_input').value.trim();
+  finalizeItem('Tanıdı ama adını söyleyemedi', descVal, '');
+}
+
+function finalizeItem(recognition, given_desc, rt) {
+  const t = testOrder[testPos];
+  if (t === 'bukim') {
+    const item = shuffledPhotos[biIndex];
+    biResponses.push({ no: item.no, name: item.name, recognition, given_desc, rt });
+    biIndex++;
+  } else {
+    const item = shuffledObjects[neIndex];
+    neResponses.push({ no: item.no, name: item.name, recognition, given_desc, rt });
+    neIndex++;
+  }
+  saveProgress();
+  loadItem();
+  window.scrollTo(0, 0);
+}
+
+function finishCurrentTest() {
+  testPos++;
+  if (testPos < testOrder.length) {
+    goToTestIntro();
+  } else {
+    showPage('page-demo');
+  }
+}
+
+// -- DEMOGRAPHICS VALIDATION (en sonda) --------------------------
 function submitDemographics() {
   let valid = true;
-
   function checkText(id, errId) {
     const val = document.getElementById(id).value.trim();
     const err = document.getElementById(errId);
@@ -862,131 +808,10 @@ function submitDemographics() {
   if (!valid) { window.scrollTo(0,0); return; }
 
   demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum };
-
-  // Shuffle photos (Fisher-Yates)
-  shuffledPhotos = [...PHOTOS];
-  for (let i = shuffledPhotos.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledPhotos[i], shuffledPhotos[j]] = [shuffledPhotos[j], shuffledPhotos[i]];
-  }
-  currentIndex = 0;
-  responses = [];
-
-  showPage('page-intro');
+  submitAllData();
 }
 
-// ── START FACES ─────────────────────────────────────────────
-function startFaces() {
-  showPage('page-faces');
-  loadFace();
-}
-
-// ── FACE LOGIC ───────────────────────────────────────────
-function loadFace() {
-  const photo = shuffledPhotos[currentIndex];
-  const total = shuffledPhotos.length;
-
-  // Progress
-  const pct = Math.round((currentIndex / total) * 100);
-  document.getElementById('prog_label').textContent = `Fotoğraf ${currentIndex + 1} / ${total}`;
-  document.getElementById('prog_pct').textContent = `${pct}%`;
-  document.getElementById('prog_fill').style.width = pct + '%';
-
-  // Image
-  const img = document.getElementById('face_img');
-  const loading = document.getElementById('img_loading');
-  img.style.display = 'none';
-  loading.style.display = 'block';
-  loading.textContent = 'Yükleniyor…';
-  img.src = photo.url;
-
-  // Reset UI
-  currentRecognition = null;
-  document.getElementById('btn_yes').className = 'rec-btn';
-  document.getElementById('btn_no').className = 'rec-btn';
-  document.getElementById('btn_unsure').className = 'rec-btn';
-  document.getElementById('name_wrap').className = 'name-input-wrap';
-  document.getElementById('name_input').value = '';
-  const isLast = currentIndex === shuffledPhotos.length - 1;
-  document.getElementById('btn_next').textContent = isLast ? 'Kaydet ve Bitir →' : 'Kaydet ve Devam Et →';
-  document.getElementById('btn_next').disabled = true;
-  document.getElementById('face_nav').style.display = 'none';
-  // Show photo number from Drive order
-  const photoNum = shuffledPhotos[currentIndex].name.split(' ')[0];
-  document.getElementById('photo_number').textContent = 'No: ' + photoNum;
-  prefetchNext();
-}
-
-
-function prefetchNext() {
-  for (let i = 1; i <= 3; i++) {
-    const idx = currentIndex + i;
-    if (idx < shuffledPhotos.length) {
-      const img = new Image();
-      img.src = shuffledPhotos[idx].url;
-    }
-  }
-}
-
-function selectRecognition(choice) {
-  currentRecognition = choice;
-
-  document.getElementById('btn_yes').className    = 'rec-btn' + (choice === 'yes'    ? ' selected-yes'    : '');
-  document.getElementById('btn_no').className     = 'rec-btn' + (choice === 'no'     ? ' selected-no'     : '');
-  document.getElementById('btn_unsure').className = 'rec-btn' + (choice === 'unsure' ? ' selected-unsure' : '');
-
-  const nameWrap = document.getElementById('name_wrap');
-  const faceNav  = document.getElementById('face_nav');
-
-  if (choice === 'yes' || choice === 'no') {
-    // Direct next - no input needed
-    nameWrap.className = 'name-input-wrap';
-    faceNav.style.display = 'none';
-    document.getElementById('name_input').value = '';
-    // Auto-advance after brief delay so user sees selection
-    setTimeout(() => nextFace(), 400);
-  } else {
-    // Emin değilim - show input and next button
-    nameWrap.className = 'name-input-wrap visible';
-    faceNav.style.display = 'block';
-    document.getElementById('btn_next').disabled = false;
-    document.getElementById('name_input').focus();
-  }
-}
-
-function nextFace() {
-  const photo = shuffledPhotos[currentIndex];
-  const nameVal = document.getElementById('name_input').value.trim();
-
-  // For unsure: input optional but encouraged (no hard block)
-  document.getElementById('name_input').style.borderColor = '';
-
-  responses.push({
-    photo_id:    photo.id,
-    photo_name:  photo.name,
-    recognition: currentRecognition === 'yes' ? 'Tanıyorum' : currentRecognition === 'no' ? 'Tanımıyorum' : 'Emin Değilim',
-    given_name:  nameVal,
-  });
-
-  currentIndex++;
-  saveProgress();
-
-  if (currentIndex >= shuffledPhotos.length) {
-    // Show sending state before navigating away
-    submitData();
-  } else {
-    loadFace();
-    // Update button text if this is the last photo
-    if (currentIndex === shuffledPhotos.length - 1) {
-      document.getElementById('btn_next').textContent = 'Tamamla →';
-    } else {
-      document.getElementById('btn_next').textContent = 'Sonraki →';
-    }
-    window.scrollTo(0, 0);
-  }
-}
-
-// ── INIT: check for saved progress ─────────────────────
+// -- INIT: check for saved progress ------------------------------
 window.addEventListener('DOMContentLoaded', function() {
   const saved = checkSavedProgress();
   if (saved) {
@@ -1004,172 +829,139 @@ function doFresh() {
   clearProgress();
   document.getElementById('resume_banner').style.display = 'none';
   document.getElementById('start_btn').style.display = 'block';
-  showPage('page-demo');
+  showPage('page-test-select');
 }
-// ────────────────────────────────────────────────────────
 
-// ── SUBMIT TO GOOGLE SHEETS ─────────────────────────────
-
-// ── LOCAL STORAGE PROGRESS ──────────────────────────────
+// -- LOCAL STORAGE PROGRESS --------------------------------------
 function saveProgress() {
   const state = {
-    demographics: demographics,
-    shuffledIds: shuffledPhotos.map(p => p.id),
-    currentIndex: currentIndex,
-    responses: responses,
+    participantId, testOrder, testPos,
+    shuffledPhotoIds: shuffledPhotos.map(p => p.no),
+    biIndex, biResponses,
+    shuffledObjectIds: shuffledObjects.map(o => o.no),
+    neIndex, neResponses,
   };
-  localStorage.setItem('bukim_progress', JSON.stringify(state));
+  localStorage.setItem('bunebukim_progress', JSON.stringify(state));
 }
 
 function clearProgress() {
-  localStorage.removeItem('bukim_progress');
+  localStorage.removeItem('bunebukim_progress');
 }
 
 function checkSavedProgress() {
   try {
-    const saved = localStorage.getItem('bukim_progress');
+    const saved = localStorage.getItem('bunebukim_progress');
     if (!saved) return false;
     const state = JSON.parse(saved);
-    if (!state.currentIndex || state.currentIndex === 0) return false;
+    if (!state.testOrder || state.testOrder.length === 0) return false;
+    if ((state.biIndex || 0) === 0 && (state.neIndex || 0) === 0) return false;
     return state;
   } catch(e) { return false; }
 }
 
 function resumeProgress(state) {
-  demographics = state.demographics;
-  responses = state.responses;
-  currentIndex = state.currentIndex;
-  // Rebuild shuffled array from saved ID order
-  const idMap = {};
-  PHOTOS.forEach(p => { idMap[p.id] = p; });
-  shuffledPhotos = state.shuffledIds.map(id => idMap[id]).filter(Boolean);
-  showPage('page-faces');
-  loadFace();
-}
-// ────────────────────────────────────────────────────────
+  participantId = state.participantId;
+  testOrder = state.testOrder;
+  testPos = state.testPos;
+  biIndex = state.biIndex || 0;
+  biResponses = state.biResponses || [];
+  neIndex = state.neIndex || 0;
+  neResponses = state.neResponses || [];
 
-function showPerformance() {
+  const photoMap = {}; PHOTOS.forEach(p => { photoMap[p.no] = p; });
+  shuffledPhotos = (state.shuffledPhotoIds || []).map(no => photoMap[no]).filter(Boolean);
+  const objMap = {}; OBJECTS.forEach(o => { objMap[o.no] = o; });
+  shuffledObjects = (state.shuffledObjectIds || []).map(no => objMap[no]).filter(Boolean);
+
+  showPage('page-items');
+  loadItem();
+}
+
+// -- PERFORMANCE SUMMARY ------------------------------------------
+function renderPerfBlock(responses, gridId, textId) {
   const total = responses.length;
-  if (total === 0) return;
-  const yes    = responses.filter(r => r.recognition === 'Tanıyorum').length;
-  const unsure = responses.filter(r => r.recognition === 'Emin Değilim').length;
-  const no     = responses.filter(r => r.recognition === 'Tanımıyorum').length;
+  if (total === 0) { document.getElementById(gridId).innerHTML = ''; document.getElementById(textId).textContent = ''; return; }
+  const bilindi = responses.filter(r => r.recognition === 'Adını söyledi').length;
+  const kismi   = responses.filter(r => r.recognition === 'Tanıdı ama adını söyleyemedi').length;
+  const bilinmedi = responses.filter(r => r.recognition === 'Tanımadı').length;
 
-  document.getElementById('perf_detail').textContent =
-    `${total} fotoğraftan ${yes} tanesini tanıdınız, ${unsure} tanesinden emin değildiniz, ${no} tanesini tanımadınız.`;
+  document.getElementById(textId).textContent =
+    `${total} görselden ${bilindi} tanesinin adını söylediniz, ${kismi} tanesini tanıdınız ama adını söyleyemediniz, ${bilinmedi} tanesini tanımadınız.`;
 
-  const canvas = document.getElementById('perf_chart');
-  const dpr = window.devicePixelRatio || 1;
-  const W = 340, H = 300;
-  canvas.width  = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width  = W + 'px';
-  canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  const cx = W / 2, cy = H / 2;
-  const rOuter = 90, rInner = 50;
-  const gap = 0.025;
-
-  const slices = [
-    { val: yes,    color: '#1a7a3a', label: 'Tanıyorum' },
-    { val: unsure, color: '#d97706', label: 'Emin Değilim' },
-    { val: no,     color: '#cc2222', label: 'Tanımıyorum' },
-  ].filter(s => s.val > 0);
-
-  // Draw slices
-  let startAngle = -Math.PI / 2;
-  const drawn = [];
-  slices.forEach(s => {
-    const sweep = (s.val / total) * 2 * Math.PI;
-    ctx.beginPath();
-    ctx.arc(cx, cy, rOuter, startAngle + gap/2, startAngle + sweep - gap/2);
-    ctx.arc(cx, cy, rInner, startAngle + sweep - gap/2, startAngle + gap/2, true);
-    ctx.closePath();
-    ctx.fillStyle = s.color;
-    ctx.fill();
-    drawn.push({ s, midAngle: startAngle + sweep / 2, pct: Math.round(s.val / total * 100) });
-    startAngle += sweep;
-  });
-
-  // White donut hole
-  ctx.beginPath();
-  ctx.arc(cx, cy, rInner - 1, 0, 2 * Math.PI);
-  ctx.fillStyle = '#f5f5f5';
-  ctx.fill();
-
-  // Labels outside with leader lines
-  drawn.forEach(({ s, midAngle, pct }) => {
-    if (pct === 0) return;
-    const cos = Math.cos(midAngle), sin = Math.sin(midAngle);
-
-    const x1 = cx + cos * (rOuter + 5);
-    const y1 = cy + sin * (rOuter + 5);
-    const x2 = cx + cos * (rOuter + 18);
-    const y2 = cy + sin * (rOuter + 18);
-    // Text anchor point
-    const tx = cx + cos * (rOuter + 22);
-    const ty = cy + sin * (rOuter + 22);
-
-    // Leader line
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = s.color;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // Text alignment
-    let align = 'center';
-    if (cos > 0.2)  align = 'left';
-    if (cos < -0.2) align = 'right';
-    ctx.textAlign = align;
-    ctx.textBaseline = 'middle';
-
-    ctx.fillStyle = s.color;
-    ctx.font = 'bold 13px system-ui';
-    ctx.fillText(pct + '%', tx, ty - 8);
-    ctx.font = '11px system-ui';
-    ctx.fillText(s.label, tx, ty + 8);
+  const cards = [
+    { label: 'Adını söyledi', val: bilindi, cls: 'green' },
+    { label: 'Tanıdı, adını söyleyemedi', val: kismi, cls: 'orange' },
+    { label: 'Tanımadı', val: bilinmedi, cls: 'red' },
+  ];
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  cards.forEach(c => {
+    const pct = Math.round(c.val / total * 100);
+    const div = document.createElement('div');
+    div.className = 'perf-card ' + c.cls;
+    div.innerHTML = `<div class="perf-pct ${c.cls}">${pct}%</div><div class="perf-label">${c.label}</div>`;
+    grid.appendChild(div);
   });
 }
 
-async function submitData() {
-  // Snapshot everything first
+function showCombinedPerformance() {
+  renderPerfBlock(biResponses, 'perf_grid_bukim', 'perf_text_bukim');
+  renderPerfBlock(neResponses, 'perf_grid_bune', 'perf_text_bune');
+}
+
+// -- SUBMIT TO GOOGLE SHEETS (iki ayrı dosya) ---------------------
+async function postTest(url, testResponses, stimulusKey) {
   const payload = JSON.stringify({
     timestamp: new Date().toISOString(),
-    demographics: {
-      yas: demographics.yas, cinsiyet: demographics.cinsiyet,
-      egitim: demographics.egitim, egitimYil: demographics.egitimYil,
-      meslek: demographics.meslek, gelir: demographics.gelir,
-      turkiye: demographics.turkiye, sehir: demographics.sehir, konum: demographics.konum
-    },
-    responses: responses.map(r => ({
-      photo_name: r.photo_name, recognition: r.recognition, given_name: r.given_name || ''
+    participantId: participantId,
+    demographics: demographics,
+    responses: testResponses.map(r => ({
+      [stimulusKey + '_no']: r.no,
+      [stimulusKey + '_name']: r.name,
+      recognition: r.recognition,
+      given_desc: r.given_desc || '',
+      rt: r.rt === '' || r.rt === undefined ? '' : r.rt
     }))
   });
 
-  // Show loading only after snapshot
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: payload
+  });
+  const text = await resp.text();
+  let result = null;
+  try { result = JSON.parse(text); } catch(e) {}
+  if (!resp.ok) throw new Error('Sunucu ' + resp.status + ' hatası (BuKim/BuNe).');
+  if (result && result.ok === false) throw new Error(result.error || 'Sunucu isteği reddetti.');
+  return result;
+}
+
+async function submitAllData() {
   showPage('page-sending');
 
+  let bukimError = null, buneError = null;
   try {
-    const resp = await fetch(GOOGLE_SHEETS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: payload
-    });
-    const result = await resp.text();
-    console.log('Sheets cevabı:', result);
-    clearProgress();
-    showPerformance();
-    showPage('page-done');
-    document.getElementById('submit_status').className = 'submit-status success';
-    document.getElementById('submit_status').textContent = '✓ Yanıtlarınız başarıyla kaydedildi.';
-  } catch(err) {
-    document.getElementById('sending_msg').textContent = 'Bağlantı hatası. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
-    console.error(err);
+    await postTest(GOOGLE_SHEETS_URL_BUKIM, biResponses, 'photo');
+  } catch (e) { bukimError = e; console.error('BuKim gönderim hatası:', e); }
+
+  try {
+    await postTest(GOOGLE_SHEETS_URL_BUNE, neResponses, 'object');
+  } catch (e) { buneError = e; console.error('BuNe gönderim hatası:', e); }
+
+  if (bukimError || buneError) {
+    const parts = [];
+    if (bukimError) parts.push('Bu Kim? verisi kaydedilemedi: ' + bukimError.message);
+    if (buneError) parts.push('Bu Ne? verisi kaydedilemedi: ' + buneError.message);
+    document.getElementById('sending_msg').textContent = parts.join(' ');
+    return;
   }
+
+  clearProgress();
+  showCombinedPerformance();
+  showPage('page-done');
+  document.getElementById('submit_status').className = 'submit-status success';
+  document.getElementById('submit_status').textContent = '✓ Yanıtlarınız başarıyla kaydedildi.';
 }
 </script>
 </body>
