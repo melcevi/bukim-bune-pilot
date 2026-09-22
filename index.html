@@ -370,6 +370,11 @@
     <div class="error-msg" id="err_uygulayan">Lütfen uygulayan kişinin adını soyadını giriniz.</div>
   </div>
 
+  <div class="form-group">
+    <label for="q_notlar">12. Uygulayıcı Notları <span style="font-weight:400; color:#888;">(opsiyonel)</span></label>
+    <textarea id="q_notlar" rows="4" placeholder="Eklemek istediğiniz bir not varsa buraya yazabilirsiniz..." style="width:100%; resize:vertical; font-family:inherit;"></textarea>
+  </div>
+
   <div class="nav-row">
     <button class="btn-primary" onclick="submitDemographics()">Bitir →</button>
   </div>
@@ -414,8 +419,8 @@
 ========================================= -->
 <script>
 // -- GOOGLE SHEETS ENTEGRASYONU (mevcut sheet'lere yazmaya devam eder) --
-const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbyxfJwKNB8lP5wMrT3R960KdHJIzB0T1-bIPWqnlJjdMbBh3UZtHi6YJTVbAyfVRqg9DQ/exec";
-const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbxQOjt0FDLTRZzpkkJMtENOVykkmwjHPj1m4Cd9EnpCZNOwmPQopvNnXi-c4unzZPeY/exec";
+const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbysnsQzPbKGP7MzdUdE75Vnp1T3sarUFH2gxaoxKzWT2_k1_wGuSye51U0U0fe79OLu/exec";
+const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbxG2n-gf7L3Vz3Px9BgKeRGi4ppEwLHn9RNAVxz34oyNDbEnS-Mnwsu1sqpEZXclfXC/exec";
 
 const PHOTOS = [
   { no: 1, name: "Abdullah Gül", id: "1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq", url: "https://lh3.googleusercontent.com/d/1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq=w800" },
@@ -821,10 +826,11 @@ function submitDemographics() {
   const konum      = checkRadio('konum', 'err_konum');
   const uygulamaSekli = checkRadio('uygulama_sekli', 'err_uygulama_sekli');
   const uygulayan  = checkText('q_uygulayan', 'err_uygulayan');
+  const notlar     = document.getElementById('q_notlar').value.trim();
 
   if (!valid) { window.scrollTo(0,0); return; }
 
-  demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum, uygulamaSekli, uygulayan };
+  demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum, uygulamaSekli, uygulayan, notlar };
   submitAllData();
 }
 
