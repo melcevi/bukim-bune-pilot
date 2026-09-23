@@ -10,10 +10,10 @@
   .page { display: none !important; min-height: 100vh; padding: 24px 16px 48px; max-width: 600px; margin: 0 auto; }
   .page.active { display: block !important; }
 
-  #page-welcome, #page-test-select, #page-intro-bukim, #page-intro-bune, #page-done {
+  #page-login, #page-welcome, #page-test-select, #page-intro-bukim, #page-intro-bune, #page-done {
     flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 48px 24px;
   }
-  #page-welcome.active, #page-test-select.active, #page-intro-bukim.active, #page-intro-bune.active, #page-done.active {
+  #page-login.active, #page-welcome.active, #page-test-select.active, #page-intro-bukim.active, #page-intro-bune.active, #page-done.active {
     display: flex !important;
   }
 
@@ -57,7 +57,7 @@
   .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
   .form-group .hint { display: block; font-weight: 400; color: #888; font-size: 0.82rem; margin-bottom: 8px; }
 
-  input[type="number"], input[type="text"], select, textarea {
+  input[type="number"], input[type="text"], input[type="password"], select, textarea {
     width: 100%; padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem;
     font-family: inherit; background: #fff; transition: border-color 0.15s; appearance: none; -webkit-appearance: none;
   }
@@ -158,10 +158,34 @@
 </head>
 <body>
 
+<div id="uygulayici_badge" style="display:none; position:fixed; top:6px; left:50%; transform:translateX(-50%); width:100%; max-width:600px; padding:0 16px; box-sizing:border-box; text-align:right; font-size:0.7rem; color:#aaa; z-index:9999; pointer-events:none; letter-spacing:0.2px;"></div>
+
+<!-- =========================================
+     SAYFA -1: UYGULAYICI GİRİŞİ
+========================================= -->
+<div id="page-login" class="page active">
+  <div class="cover-eyebrow">Uygulayıcı Girişi</div>
+  <div class="cover-title" style="font-size: clamp(1.8rem, 7vw, 2.6rem);">Giriş yapın</div>
+  <div class="cover-subtitle" style="margin-bottom:24px;">Teste başlamak için email ve şifrenizi girin.</div>
+
+  <div style="width:100%; max-width:340px; text-align:left;">
+    <div class="form-group">
+      <label for="login_email">Email</label>
+      <input type="text" id="login_email" placeholder="ornek@medipol.edu.tr" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="login_password">Şifre</label>
+      <input type="password" id="login_password" placeholder="Şifre" autocomplete="current-password">
+    </div>
+    <div class="error-msg" id="err_login" style="margin-bottom:10px;">Email veya şifre hatalı.</div>
+  </div>
+  <button class="btn-primary" id="login_btn" onclick="doLogin()">Giriş Yap</button>
+</div>
+
 <!-- =========================================
      SAYFA 0: HOŞ GELDİNİZ
 ========================================= -->
-<div id="page-welcome" class="page active">
+<div id="page-welcome" class="page">
   <div class="cover-eyebrow">Araştırma Anketi</div>
   <div class="cover-title">Hoş geldiniz</div>
   <div class="cover-desc">
@@ -365,13 +389,7 @@
   </div>
 
   <div class="form-group">
-    <label for="q_uygulayan">11. Uygulayan kişinin Adı Soyadı *</label>
-    <input type="text" id="q_uygulayan" placeholder="Örn: Melek Elcircevi">
-    <div class="error-msg" id="err_uygulayan">Lütfen uygulayan kişinin adını soyadını giriniz.</div>
-  </div>
-
-  <div class="form-group">
-    <label for="q_notlar">12. Uygulayıcı Notları <span style="font-weight:400; color:#888;">(opsiyonel)</span></label>
+    <label for="q_notlar">11. Uygulayıcı Notları <span style="font-weight:400; color:#888;">(opsiyonel)</span></label>
     <textarea id="q_notlar" rows="4" placeholder="Eklemek istediğiniz bir not varsa buraya yazabilirsiniz..." style="width:100%; resize:vertical; font-family:inherit;"></textarea>
   </div>
 
@@ -419,8 +437,7 @@
 ========================================= -->
 <script>
 // -- GOOGLE SHEETS ENTEGRASYONU (mevcut sheet'lere yazmaya devam eder) --
-const GOOGLE_SHEETS_URL_BUKIM = "https://script.google.com/macros/s/AKfycbysnsQzPbKGP7MzdUdE75Vnp1T3sarUFH2gxaoxKzWT2_k1_wGuSye51U0U0fe79OLu/exec";
-const GOOGLE_SHEETS_URL_BUNE  = "https://script.google.com/macros/s/AKfycbxG2n-gf7L3Vz3Px9BgKeRGi4ppEwLHn9RNAVxz34oyNDbEnS-Mnwsu1sqpEZXclfXC/exec";
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyarCLKqoN5or-TnfnMsRvuHLotUDeiwrhfX-7jvfv6s5S6ku95IbF7QwxXHWyuJXCzIA/exec";
 
 const PHOTOS = [
   { no: 1, name: "Abdullah Gül", id: "1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq", url: "https://lh3.googleusercontent.com/d/1ZBlRbH5691xAqJLUuk-t7AFfT5vYl0iq=w800" },
@@ -577,6 +594,8 @@ const OBJECTS = [
 ];
 
 // -- STATE ----------------------------------------------------
+let loginData = null;    // { email, uygulayici }
+
 let testOrder = [];      // ['bukim','bune'] or ['bune','bukim']
 let testPos = 0;
 
@@ -606,6 +625,60 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+}
+
+// -- UYGULAYICI GİRİŞİ --------------------------------------------
+async function doLogin() {
+  const email = document.getElementById('login_email').value.trim();
+  const password = document.getElementById('login_password').value;
+  const err = document.getElementById('err_login');
+  const btn = document.getElementById('login_btn');
+
+  err.classList.remove('visible');
+
+  if (!email || !password) {
+    err.textContent = 'Lütfen email ve şifrenizi girin.';
+    err.classList.add('visible');
+    return;
+  }
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = 'Kontrol ediliyor...';
+
+  try {
+    const resp = await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'login', email, password })
+    });
+    const text = await resp.text();
+    let result = null;
+    try { result = JSON.parse(text); } catch(e) {}
+
+    if (!resp.ok || !result || result.ok !== true) {
+      err.textContent = (result && result.error) ? result.error : 'Email veya şifre hatalı.';
+      err.classList.add('visible');
+      btn.disabled = false;
+      btn.textContent = originalText;
+      return;
+    }
+
+    loginData = { email, uygulayici: result.uygulayici || '' };
+    const badge = document.getElementById('uygulayici_badge');
+    if (loginData.uygulayici) {
+      badge.textContent = 'Uygulayıcı: ' + loginData.uygulayici;
+      badge.style.display = 'block';
+    }
+    showPage('page-welcome');
+  } catch (e) {
+    console.error('Giriş hatası:', e);
+    err.textContent = 'Bağlantı hatası, lütfen internetinizi kontrol edin.';
+    err.classList.add('visible');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 }
 
 // -- RADIO HIGHLIGHT ----------------------------------------------
@@ -825,12 +898,15 @@ function submitDemographics() {
   const sehir      = checkText('q_sehir', 'err_sehir');
   const konum      = checkRadio('konum', 'err_konum');
   const uygulamaSekli = checkRadio('uygulama_sekli', 'err_uygulama_sekli');
-  const uygulayan  = checkText('q_uygulayan', 'err_uygulayan');
   const notlar     = document.getElementById('q_notlar').value.trim();
 
   if (!valid) { window.scrollTo(0,0); return; }
 
-  demographics = { yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum, uygulamaSekli, uygulayan, notlar };
+  demographics = {
+    yas, cinsiyet, egitim, egitimYil, meslek, gelir, turkiye, sehir, konum,
+    uygulamaSekli, notlar,
+    uygulayan: (loginData && loginData.uygulayici) ? loginData.uygulayici : ''
+  };
   submitAllData();
 }
 
@@ -951,15 +1027,17 @@ function pivotToWide(items, responses) {
   return wide;
 }
 
-async function postTest(url, wideData) {
+async function postTest(test, wideData) {
   const payload = JSON.stringify({
+    type: 'submit',
+    test: test,
     timestamp: new Date().toISOString(),
     participantId: participantId,
     demographics: demographics,
     wide: wideData
   });
 
-  const resp = await fetch(url, {
+  const resp = await fetch(GOOGLE_SHEETS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: payload
@@ -978,12 +1056,12 @@ async function submitAllData() {
   let bukimError = null, buneError = null;
   try {
     const wideBuKim = pivotToWide(PHOTOS, biResponses);
-    await postTest(GOOGLE_SHEETS_URL_BUKIM, wideBuKim);
+    await postTest('bukim', wideBuKim);
   } catch (e) { bukimError = e; console.error('BuKim gönderim hatası:', e); }
 
   try {
     const wideBuNe = pivotToWide(OBJECTS, neResponses);
-    await postTest(GOOGLE_SHEETS_URL_BUNE, wideBuNe);
+    await postTest('bune', wideBuNe);
   } catch (e) { buneError = e; console.error('BuNe gönderim hatası:', e); }
 
   if (bukimError || buneError) {
